@@ -11,7 +11,8 @@ body{
     background:white;
 }
 
-h1{
+.logo{
+    width:120px;
     margin-top:20px;
 }
 
@@ -19,7 +20,7 @@ h1{
     display:grid;
     grid-template-columns: repeat(5, 80px);
     grid-template-rows: repeat(2, 80px);
-    gap:10px;
+    gap:8px;
     justify-content:center;
     margin:30px;
 }
@@ -27,7 +28,7 @@ h1{
 .celda{
     width:80px;
     height:80px;
-    border:5px solid black;
+    border:2px solid black; /* MÁS DELGADO */
     background:#eee;
     display:flex;
     align-items:center;
@@ -46,7 +47,6 @@ h1{
     grid-template-columns: repeat(5, 60px);
     gap:10px;
     justify-content:center;
-    margin-top:20px;
 }
 
 button{
@@ -69,13 +69,22 @@ button:hover{
     font-size:24px;
     font-weight:bold;
 }
-</style>
 
+#contador{
+    margin-top:10px;
+    font-size:18px;
+}
+
+</style>
 </head>
 
 <body>
 
-<h1>¿Cuántos puntos hay?</h1>
+<img src="logo.png" class="logo">
+
+<h2>¿Cuántos puntos hay?</h2>
+
+<div id="contador"></div>
 
 <div class="marco" id="marco"></div>
 
@@ -85,18 +94,55 @@ button:hover{
 
 <script>
 let cantidad = 0;
+let ejercicio = 1;
+let correctas = 0;
 
 function generar(){
+
+    if(ejercicio > 20){
+        document.body.innerHTML = `
+        <h1>Resultados</h1>
+        <p>Respuestas correctas: ${correctas} de 20</p>
+        <button onclick="location.reload()">Reiniciar</button>
+        `;
+        return;
+    }
+
+    document.getElementById("contador").innerText = "Ejercicio " + ejercicio + " de 20";
+
     const marco = document.getElementById("marco");
     marco.innerHTML = "";
 
-    cantidad = Math.floor(Math.random()*10)+1;
+    let extra = Math.floor(Math.random()*5)+1; // 1 a 5
+    cantidad = 5 + extra;
+
+    let cincoArriba = Math.random() < 0.5;
 
     for(let i=0;i<10;i++){
         let celda = document.createElement("div");
         celda.className = "celda";
 
-        if(i < cantidad){
+        let ponerPunto = false;
+
+        if(cincoArriba){
+            if(i < 5 && i < 5){
+                ponerPunto = true;
+            }
+            if(i >=5 && i < 5 + extra){
+                ponerPunto = true;
+            }
+        }else{
+            if(i >=5 && i <10){
+                if(i-5 < 5){
+                    ponerPunto = true;
+                }
+            }
+            if(i < extra){
+                ponerPunto = true;
+            }
+        }
+
+        if(ponerPunto){
             let punto = document.createElement("div");
             punto.className = "punto";
             celda.appendChild(punto);
@@ -117,11 +163,15 @@ function crearBotones(){
 
         btn.onclick = function(){
             if(i === cantidad){
+                correctas++;
                 document.getElementById("mensaje").innerText="¡Muy bien!";
-                setTimeout(generar,1000);
             }else{
                 document.getElementById("mensaje").innerText="Intenta de nuevo";
+                return;
             }
+
+            ejercicio++;
+            setTimeout(generar,800);
         };
 
         cont.appendChild(btn);
