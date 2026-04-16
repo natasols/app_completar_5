@@ -10,19 +10,23 @@ body{
     text-align:center;
 }
 
+/* LOGO */
 .logo{
     width:120px;
     margin-top:20px;
 }
 
+/* MARCO 5x2 (CLAVE) */
 .marco{
     display:grid;
     grid-template-columns: repeat(5,80px);
+    grid-template-rows: repeat(2,80px); /* 👈 ESTO FALTABA */
     gap:8px;
     justify-content:center;
     margin-top:30px;
 }
 
+/* CASILLAS */
 .casilla{
     width:80px;
     height:80px;
@@ -33,6 +37,7 @@ body{
     background:#ddd;
 }
 
+/* PUNTOS */
 .punto{
     width:40px;
     height:40px;
@@ -44,6 +49,7 @@ body{
     background:green;
 }
 
+/* BOTONES */
 .boton{
     margin:10px;
     padding:15px 20px;
@@ -64,7 +70,7 @@ body{
 <h2>¿Cuántas faltan para completar 10?</h2>
 <p id="info"></p>
 
-<div id="marco"></div>
+<div id="marco" class="marco"></div>
 <div id="botones"></div>
 
 <script>
@@ -74,9 +80,6 @@ let total = 20;
 let cantidad = 0;
 let respuestaCorrecta = 0;
 let aciertos = 0;
-
-// 🔥 guardamos el estado real del marco
-let estado = [];
 
 function nuevoEjercicio(){
 
@@ -95,42 +98,19 @@ function nuevoEjercicio(){
     let marco = document.getElementById("marco");
     marco.innerHTML = "";
 
-    estado = Array(10).fill(0);
+    let totalCasillas = 10;
 
-    let extra = cantidad - 5;
-    let arribaCompleta = Math.random() < 0.5;
-
-    if(arribaCompleta){
-        // fila arriba completa
-        for(let i=0;i<5;i++){
-            estado[i] = 1;
-        }
-        for(let i=0;i<extra;i++){
-            estado[5+i] = 1;
-        }
-    }else{
-        // fila abajo completa
-        for(let i=5;i<10;i++){
-            estado[i] = 1;
-        }
-        for(let i=0;i<extra;i++){
-            estado[i] = 1;
-        }
-    }
-
-    // dibujar
-    for(let i=0;i<10;i++){
+    for(let i=0;i<totalCasillas;i++){
         let div = document.createElement("div");
         div.className="casilla";
 
-        if(estado[i] == 1){
+        if(i < cantidad){
             div.innerHTML = '<div class="punto"></div>';
         }
 
         marco.appendChild(div);
     }
 
-    // botones
     let botones = document.getElementById("botones");
     botones.innerHTML="";
 
@@ -160,9 +140,14 @@ function mostrarSolucion(){
 
     let casillas = document.querySelectorAll(".casilla");
 
-    for(let i=0;i<10;i++){
-        if(estado[i] == 0){
+    let faltan = respuestaCorrecta;
+    let contador = 0;
+
+    for(let i=0;i<casillas.length;i++){
+
+        if(casillas[i].innerHTML==="" && contador < faltan){
             casillas[i].innerHTML = '<div class="punto verde"></div>';
+            contador++;
         }
     }
 }
