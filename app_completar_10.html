@@ -54,7 +54,6 @@ body{
     border-radius:10px;
     cursor:pointer;
 }
-
 </style>
 </head>
 
@@ -93,19 +92,51 @@ function nuevoEjercicio(){
     let marco = document.getElementById("marco");
     marco.innerHTML = "";
 
-    let totalCasillas = 10;
+    // 👉 CONSTRUCCIÓN DIDÁCTICA 5 + n
+    let arriba = Array(5).fill(0);
+    let abajo = Array(5).fill(0);
 
-    for(let i=0;i<totalCasillas;i++){
+    let extra = cantidad - 5;
+
+    let arribaCompleta = Math.random() < 0.5;
+
+    if(arribaCompleta){
+        arriba = Array(5).fill(1);
+        for(let i=0;i<extra;i++){
+            abajo[i] = 1;
+        }
+    }else{
+        abajo = Array(5).fill(1);
+        for(let i=0;i<extra;i++){
+            arriba[i] = 1;
+        }
+    }
+
+    // dibujar fila superior
+    for(let i=0;i<5;i++){
         let div = document.createElement("div");
         div.className="casilla";
 
-        if(i < cantidad){
+        if(arriba[i] == 1){
             div.innerHTML = '<div class="punto"></div>';
         }
 
         marco.appendChild(div);
     }
 
+    // dibujar fila inferior
+    for(let i=0;i<5;i++){
+        let div = document.createElement("div");
+        div.className="casilla";
+
+        if(abajo[i] == 1){
+            div.innerHTML = '<div class="punto"></div>';
+        }
+
+        marco.appendChild(div);
+    }
+
+    // botones (1 a 5)
     let botones = document.getElementById("botones");
     botones.innerHTML="";
 
