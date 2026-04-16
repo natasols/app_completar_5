@@ -2,232 +2,223 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Completar 5 - DIDACTIMAT</title>
+<title>Didactimat - Completar 5</title>
 
 <style>
 body {
   font-family: Arial;
   text-align: center;
-  background: white;
+  background-color: white;
 }
 
-/* LOGO */
 .logo {
-  width: 140px;
+  width: 120px;
   margin-top: 20px;
-  margin-bottom: 10px;
 }
 
-/* PREGUNTA */
-h2 {
-  font-size: 42px;
-  margin: 20px;
-}
-
-/* MARCO */
 .marco {
   display: grid;
-  grid-template-columns: repeat(5, 140px);
+  grid-template-columns: repeat(5, 100px);
   justify-content: center;
-  margin: 40px auto;
+  border: 6px solid black;
+  width: fit-content;
+  margin: 20px auto;
 }
 
-/* CELDAS */
 .celda {
-  width: 140px;
-  height: 140px;
-  border: 6px solid black;
-  border-left: none;
+  width: 100px;
+  height: 100px;
+  border-right: 4px solid black;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-/* corregir borde izquierdo */
-.celda:first-child {
-  border-left: 6px solid black;
+.celda:last-child {
+  border-right: none;
 }
 
-/* CÍRCULOS */
 .circulo {
-  width: 100px;
-  height: 100px;
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
-  border: 5px solid black;
+  background-color: red;
+  border: 4px solid black;
 }
 
-.rojo { background: red; }
-.verde { background: limegreen; }
+.circulo-verde {
+  background-color: green;
+}
 
-/* BOTONES */
-.opciones button {
-  font-size: 32px;
+.boton {
+  font-size: 22px;
+  padding: 10px 20px;
   margin: 10px;
-  padding: 15px 25px;
 }
 
-/* MENSAJE */
-#mensaje {
-  font-size: 60px;
-  margin-top: 20px;
-  height: 70px;
+.oculto {
+  display: none;
 }
 </style>
+
 </head>
 
 <body>
 
-<img src="logo.png" class="logo">
+<!-- PORTADA -->
+<div id="portada">
+  <img src="logo.png" class="logo">
+  <h2>Nivel: Kínder</h2>
+  <h3>Habilidad: Reconocer de inmediato cantidades hasta 5</h3>
+  <button class="boton" onclick="iniciar()">INICIAR</button>
+</div>
 
-<h2>¿Cuántos faltan para completar 5?</h2>
+<!-- ACTIVIDAD -->
+<div id="actividad" class="oculto">
 
-<div class="marco" id="marco"></div>
-<div class="opciones" id="opciones"></div>
-<div id="mensaje"></div>
+  <img src="logo.png" class="logo">
+
+  <h1>¿Cuántos faltan para completar 5?</h1>
+
+  <div id="marco" class="marco"></div>
+
+  <div id="opciones"></div>
+
+  <div id="feedback" style="font-size:40px;"></div>
+
+</div>
+
+<!-- RESULTADO -->
+<div id="resultado" class="oculto">
+  <h1>RESULTADOS</h1>
+  <h2 id="resumen"></h2>
+  <button class="boton" onclick="location.reload()">REINICIAR</button>
+</div>
 
 <script>
 
-let total = 5;
-let inicial;
-let respuestaCorrecta;
-let intentos;
+let total = 20;
+let actual = 0;
+let buenas = 0;
+let intentos = 0;
 
-let ejercicioActual = 0;
-let totalEjercicios = 20;
-let correctas = 0;
-let incorrectas = 0;
+let cantidad, faltan;
 
-function generarEjercicio() {
+function iniciar(){
+  document.getElementById("portada").classList.add("oculto");
+  document.getElementById("actividad").classList.remove("oculto");
+  siguiente();
+}
 
-  if (ejercicioActual >= totalEjercicios) {
-    mostrarReporte();
+function siguiente(){
+
+  if(actual >= total){
+    terminar();
     return;
   }
 
-  ejercicioActual++;
-
-  document.getElementById("marco").innerHTML = "";
-  document.getElementById("opciones").innerHTML = "";
-  document.getElementById("mensaje").innerText = "";
-
-  inicial = Math.floor(Math.random() * 4) + 1;
-  respuestaCorrecta = total - inicial;
+  actual++;
   intentos = 0;
 
-  let posiciones = generarPosicionesAleatorias(inicial);
+  cantidad = Math.floor(Math.random() * 5);
+  faltan = 5 - cantidad;
+
+  dibujarMarco();
+  dibujarOpciones();
+
+  document.getElementById("feedback").innerHTML = "";
+}
+
+function dibujarMarco(){
 
   let marco = document.getElementById("marco");
+  marco.innerHTML = "";
 
-  for (let i = 0; i < total; i++) {
+  let posiciones = [...Array(5).keys()].sort(() => Math.random() - 0.5);
+
+  for(let i = 0; i < 5; i++){
     let celda = document.createElement("div");
-    celda.classList.add("celda");
+    celda.className = "celda";
 
-    if (posiciones.includes(i)) {
+    if(posiciones.slice(0, cantidad).includes(i)){
       let c = document.createElement("div");
-      c.classList.add("circulo", "rojo");
+      c.className = "circulo";
       celda.appendChild(c);
     }
 
     marco.appendChild(celda);
   }
-
-  generarOpciones();
 }
 
-function generarPosicionesAleatorias(cantidad) {
-  let posiciones = [];
+function dibujarOpciones(){
 
-  while (posiciones.length < cantidad) {
-    let num = Math.floor(Math.random() * total);
-    if (!posiciones.includes(num)) {
-      posiciones.push(num);
-    }
+  let opcionesDiv = document.getElementById("opciones");
+  opcionesDiv.innerHTML = "";
+
+  let opciones = [0,1,2,3,4].sort(() => Math.random() - 0.5).slice(0,4);
+
+  if(!opciones.includes(faltan)){
+    opciones[Math.floor(Math.random()*4)] = faltan;
   }
 
-  return posiciones;
-}
-
-function generarOpciones() {
-
-  let contenedor = document.getElementById("opciones");
-  let opciones = [respuestaCorrecta];
-
-  while (opciones.length < 4) {
-    let num = Math.floor(Math.random() * 5);
-    if (!opciones.includes(num)) {
-      opciones.push(num);
-    }
-  }
-
-  opciones.sort(() => Math.random() - 0.5);
-
-  opciones.forEach(op => {
+  opciones.forEach(num => {
     let btn = document.createElement("button");
-    btn.innerText = op;
-    btn.onclick = () => verificar(op);
-    contenedor.appendChild(btn);
+    btn.className = "boton";
+    btn.innerText = num;
+    btn.onclick = () => verificar(num);
+    opcionesDiv.appendChild(btn);
   });
 }
 
-function verificar(valor) {
+function verificar(valor){
 
-  if (valor === respuestaCorrecta) {
+  if(valor === faltan){
 
-    correctas++;
-    mostrarRespuestaCorrecta();
-    document.getElementById("mensaje").innerText = "👏👏👏";
+    buenas++;
 
-    setTimeout(generarEjercicio, 1500);
+    document.getElementById("feedback").innerHTML = "👏";
+
+    mostrarRespuesta();
+
+    setTimeout(siguiente, 1500);
 
   } else {
 
     intentos++;
 
-    if (intentos < 2) {
-      document.getElementById("mensaje").innerText = "🤔";
-    } else {
-      incorrectas++;
-      mostrarRespuestaCorrecta();
-      document.getElementById("mensaje").innerText = "😅";
+    document.getElementById("feedback").innerHTML = "😢";
 
-      setTimeout(generarEjercicio, 1500);
+    if(intentos >= 2){
+      setTimeout(siguiente, 1500);
     }
   }
 }
 
-function mostrarRespuestaCorrecta() {
+function mostrarRespuesta(){
 
   let marco = document.getElementById("marco");
+
   let celdas = marco.children;
 
-  let vacias = [];
-
-  for (let i = 0; i < total; i++) {
-    if (celdas[i].children.length === 0) {
-      vacias.push(i);
+  for(let celda of celdas){
+    if(celda.children.length === 0){
+      let c = document.createElement("div");
+      c.className = "circulo circulo-verde";
+      celda.appendChild(c);
     }
   }
-
-  vacias.forEach(i => {
-    let c = document.createElement("div");
-    c.classList.add("circulo", "verde");
-    celdas[i].appendChild(c);
-  });
 }
 
-function mostrarReporte() {
+function terminar(){
 
-  document.body.innerHTML = `
-    <h2 style="font-size:50px;">Resultado</h2>
-    <p style="font-size:40px;">👏 Correctas: ${correctas}</p>
-    <p style="font-size:40px;">😅 Incorrectas: ${incorrectas}</p>
-  `;
+  document.getElementById("actividad").classList.add("oculto");
+  document.getElementById("resultado").classList.remove("oculto");
+
+  document.getElementById("resumen").innerText =
+    "Respuestas correctas: " + buenas + " de " + total;
 }
-
-generarEjercicio();
 
 </script>
 
 </body>
 </html>
-  
