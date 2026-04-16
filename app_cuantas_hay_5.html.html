@@ -72,6 +72,12 @@ body{
     min-width:60px;
 }
 
+/* MENSAJE */
+.mensaje{
+    margin-top:15px;
+    font-size:20px;
+}
+
 /* RESULTADO */
 .final{
     margin-top:80px;
@@ -129,12 +135,11 @@ function siguiente(){
 
     ejercicio++;
 
-    let cantidad = Math.floor(Math.random()*5)+1; // 1 a 5
+    let cantidad = Math.floor(Math.random()*5)+1;
     respuestaCorrecta = cantidad;
 
     let posiciones = Array(5).fill(0);
 
-    // distribuir fichas (no siempre seguidas)
     let indices = [];
     while(indices.length < cantidad){
         let r = Math.floor(Math.random()*5);
@@ -157,17 +162,20 @@ function siguiente(){
         html += `<button onclick="responder(${i})">${i}</button>`;
     }
 
-    html += `</div>`;
+    html += `</div><div id="mensaje" class="mensaje"></div>`;
 
     document.getElementById("pantalla").innerHTML = html;
 }
 
 /* RESPONDER */
 function responder(valor){
-    if(valor==respuestaCorrecta){
+    if(valor == respuestaCorrecta){
         correctas++;
+        document.getElementById("mensaje").innerHTML = "<span style='color:green'><b>¡Bien!</b></span>";
+        setTimeout(siguiente, 800);
+    } else {
+        document.getElementById("mensaje").innerHTML = "<span style='color:red'><b>Intenta nuevamente</b></span>";
     }
-    siguiente();
 }
 
 /* FINAL */
