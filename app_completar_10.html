@@ -75,6 +75,9 @@ let cantidad = 0;
 let respuestaCorrecta = 0;
 let aciertos = 0;
 
+// 🔥 guardamos el estado real del marco
+let estado = [];
+
 function nuevoEjercicio(){
 
     ejercicio++;
@@ -92,51 +95,42 @@ function nuevoEjercicio(){
     let marco = document.getElementById("marco");
     marco.innerHTML = "";
 
-    // 👉 CONSTRUCCIÓN DIDÁCTICA 5 + n
-    let arriba = Array(5).fill(0);
-    let abajo = Array(5).fill(0);
+    estado = Array(10).fill(0);
 
     let extra = cantidad - 5;
-
     let arribaCompleta = Math.random() < 0.5;
 
     if(arribaCompleta){
-        arriba = Array(5).fill(1);
+        // fila arriba completa
+        for(let i=0;i<5;i++){
+            estado[i] = 1;
+        }
         for(let i=0;i<extra;i++){
-            abajo[i] = 1;
+            estado[5+i] = 1;
         }
     }else{
-        abajo = Array(5).fill(1);
+        // fila abajo completa
+        for(let i=5;i<10;i++){
+            estado[i] = 1;
+        }
         for(let i=0;i<extra;i++){
-            arriba[i] = 1;
+            estado[i] = 1;
         }
     }
 
-    // dibujar fila superior
-    for(let i=0;i<5;i++){
+    // dibujar
+    for(let i=0;i<10;i++){
         let div = document.createElement("div");
         div.className="casilla";
 
-        if(arriba[i] == 1){
+        if(estado[i] == 1){
             div.innerHTML = '<div class="punto"></div>';
         }
 
         marco.appendChild(div);
     }
 
-    // dibujar fila inferior
-    for(let i=0;i<5;i++){
-        let div = document.createElement("div");
-        div.className="casilla";
-
-        if(abajo[i] == 1){
-            div.innerHTML = '<div class="punto"></div>';
-        }
-
-        marco.appendChild(div);
-    }
-
-    // botones (1 a 5)
+    // botones
     let botones = document.getElementById("botones");
     botones.innerHTML="";
 
@@ -166,14 +160,9 @@ function mostrarSolucion(){
 
     let casillas = document.querySelectorAll(".casilla");
 
-    let faltan = respuestaCorrecta;
-    let contador = 0;
-
-    for(let i=0;i<casillas.length;i++){
-
-        if(casillas[i].innerHTML==="" && contador < faltan){
+    for(let i=0;i<10;i++){
+        if(estado[i] == 0){
             casillas[i].innerHTML = '<div class="punto verde"></div>';
-            contador++;
         }
     }
 }
