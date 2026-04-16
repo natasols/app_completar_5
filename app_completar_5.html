@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Completar 5 - DIDACTIMAT</title>
+
+<style>
+body {
+  font-family: Arial;
+  text-align: center;
+  background: white;
+}
+
+/* LOGO */
+.logo {
+  width: 140px;
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+/* PREGUNTA */
+h2 {
+  font-size: 42px;
+  margin: 20px;
+}
+
+/* MARCO */
+.marco {
+  display: grid;
+  grid-template-columns: repeat(5, 140px);
+  justify-content: center;
+  margin: 40px auto;
+}
+
+/* CELDAS */
+.celda {
+  width: 140px;
+  height: 140px;
+  border: 6px solid black;
+  border-left: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* corregir borde izquierdo */
+.celda:first-child {
+  border-left: 6px solid black;
+}
+
+/* CÍRCULOS */
+.circulo {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  border: 5px solid black;
+}
+
+.rojo { background: red; }
+.verde { background: limegreen; }
+
+/* BOTONES */
+.opciones button {
+  font-size: 32px;
+  margin: 10px;
+  padding: 15px 25px;
+}
+
+/* MENSAJE */
+#mensaje {
+  font-size: 60px;
+  margin-top: 20px;
+  height: 70px;
+}
+</style>
+</head>
+
+<body>
+
+<img src="logo.png" class="logo">
+
+<h2>¿Cuántos faltan para completar 5?</h2>
+
+<div class="marco" id="marco"></div>
+<div class="opciones" id="opciones"></div>
+<div id="mensaje"></div>
+
+<script>
+
+let total = 5;
+let inicial;
+let respuestaCorrecta;
+let intentos;
+
+let ejercicioActual = 0;
+let totalEjercicios = 20;
+let correctas = 0;
+let incorrectas = 0;
+
+function generarEjercicio() {
+
+  if (ejercicioActual >= totalEjercicios) {
+    mostrarReporte();
+    return;
+  }
+
+  ejercicioActual++;
+
+  document.getElementById("marco").innerHTML = "";
+  document.getElementById("opciones").innerHTML = "";
+  document.getElementById("mensaje").innerText = "";
+
+  inicial = Math.floor(Math.random() * 4) + 1;
+  respuestaCorrecta = total - inicial;
+  intentos = 0;
+
+  let posiciones = generarPosicionesAleatorias(inicial);
+
+  let marco = document.getElementById("marco");
+
+  for (let i = 0; i < total; i++) {
+    let celda = document.createElement("div");
+    celda.classList.add("celda");
+
+    if (posiciones.includes(i)) {
+      let c = document.createElement("div");
+      c.classList.add("circulo", "rojo");
+      celda.appendChild(c);
+    }
+
+    marco.appendChild(celda);
+  }
+
+  generarOpciones();
+}
+
+function generarPosicionesAleatorias(cantidad) {
+  let posiciones = [];
+
+  while (posiciones.length < cantidad) {
+    let num = Math.floor(Math.random() * total);
+    if (!posiciones.includes(num)) {
+      posiciones.push(num);
+    }
+  }
+
+  return posiciones;
+}
+
+function generarOpciones() {
+
+  let contenedor = document.getElementById("opciones");
+  let opciones = [respuestaCorrecta];
+
+  while (opciones.length < 4) {
+    let num = Math.floor(Math.random() * 5);
+    if (!opciones.includes(num)) {
+      opciones.push(num);
+    }
+  }
+
+  opciones.sort(() => Math.random() - 0.5);
+
+  opciones.forEach(op => {
+    let btn = document.createElement("button");
+    btn.innerText = op;
+    btn.onclick = () => verificar(op);
+    contenedor.appendChild(btn);
+  });
+}
+
+function verificar(valor) {
+
+  if (valor === respuestaCorrecta) {
+
+    correctas++;
+    mostrarRespuestaCorrecta();
+    document.getElementById("mensaje").innerText = "👏👏👏";
+
+    setTimeout(generarEjercicio, 1500);
+
+  } else {
+
+    intentos++;
+
+    if (intentos < 2) {
+      document.getElementById("mensaje").innerText = "🤔";
+    } else {
+      incorrectas++;
+      mostrarRespuestaCorrecta();
+      document.getElementById("mensaje").innerText = "😅";
+
+      setTimeout(generarEjercicio, 1500);
+    }
+  }
+}
+
+function mostrarRespuestaCorrecta() {
+
+  let marco = document.getElementById("marco");
+  let celdas = marco.children;
+
+  let vacias = [];
+
+  for (let i = 0; i < total; i++) {
+    if (celdas[i].children.length === 0) {
+      vacias.push(i);
+    }
+  }
+
+  vacias.forEach(i => {
+    let c = document.createElement("div");
+    c.classList.add("circulo", "verde");
+    celdas[i].appendChild(c);
+  });
+}
+
+function mostrarReporte() {
+
+  document.body.innerHTML = `
+    <h2 style="font-size:50px;">Resultado</h2>
+    <p style="font-size:40px;">👏 Correctas: ${correctas}</p>
+    <p style="font-size:40px;">😅 Incorrectas: ${incorrectas}</p>
+  `;
+}
+
+generarEjercicio();
+
+</script>
+
+</body>
+</html>
+  
