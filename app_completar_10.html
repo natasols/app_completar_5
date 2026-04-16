@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Didactimat - Completar 10</title>
+
+<style>
+body {
+  font-family: Arial;
+  text-align: center;
+  background-color: white;
+}
+
+.logo {
+  width: 120px;
+  margin-top: 20px;
+}
+
+.marco {
+  display: grid;
+  grid-template-columns: repeat(10, 80px);
+  justify-content: center;
+  border: 6px solid black;
+  width: fit-content;
+  margin: 20px auto;
+}
+
+.celda {
+  width: 80px;
+  height: 80px;
+  border-right: 3px solid black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.celda:last-child {
+  border-right: none;
+}
+
+.circulo {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: red;
+  border: 3px solid black;
+}
+
+.circulo-verde {
+  background-color: green;
+}
+
+.boton {
+  font-size: 20px;
+  padding: 10px 20px;
+  margin: 10px;
+}
+
+.oculto {
+  display: none;
+}
+</style>
+
+</head>
+
+<body>
+
+<!-- PORTADA -->
+<div id="portada">
+  <img src="logo.png" class="logo">
+  <h2>Nivel: Kínder / 1° básico</h2>
+  <h3>Habilidad: Reconocer relaciones hasta 10 y completar la decena</h3>
+  <button class="boton" onclick="iniciar()">INICIAR</button>
+</div>
+
+<!-- ACTIVIDAD -->
+<div id="actividad" class="oculto">
+
+  <img src="logo.png" class="logo">
+
+  <h1>¿Cuántos faltan para completar 10?</h1>
+
+  <div id="marco" class="marco"></div>
+
+  <div id="opciones"></div>
+
+  <div id="feedback" style="font-size:40px;"></div>
+
+</div>
+
+<!-- RESULTADO -->
+<div id="resultado" class="oculto">
+  <h1>RESULTADOS</h1>
+  <h2 id="resumen"></h2>
+  <button class="boton" onclick="location.reload()">REINICIAR</button>
+</div>
+
+<script>
+
+let total = 20;
+let actual = 0;
+let buenas = 0;
+let intentos = 0;
+
+let cantidad, faltan;
+
+function iniciar(){
+  document.getElementById("portada").classList.add("oculto");
+  document.getElementById("actividad").classList.remove("oculto");
+  siguiente();
+}
+
+function siguiente(){
+
+  if(actual >= total){
+    terminar();
+    return;
+  }
+
+  actual++;
+  intentos = 0;
+
+  cantidad = Math.floor(Math.random() * 10);
+  faltan = 10 - cantidad;
+
+  dibujarMarco();
+  dibujarOpciones();
+
+  document.getElementById("feedback").innerHTML = "";
+}
+
+function dibujarMarco(){
+
+  let marco = document.getElementById("marco");
+  marco.innerHTML = "";
+
+  let posiciones = [...Array(10).keys()].sort(() => Math.random() - 0.5);
+
+  for(let i = 0; i < 10; i++){
+    let celda = document.createElement("div");
+    celda.className = "celda";
+
+    if(posiciones.slice(0, cantidad).includes(i)){
+      let c = document.createElement("div");
+      c.className = "circulo";
+      celda.appendChild(c);
+    }
+
+    marco.appendChild(celda);
+  }
+}
+
+function dibujarOpciones(){
+
+  let opcionesDiv = document.getElementById("opciones");
+  opcionesDiv.innerHTML = "";
+
+  let opciones = [...Array(10).keys()].sort(() => Math.random() - 0.5).slice(0,4);
+
+  if(!opciones.includes(faltan)){
+    opciones[Math.floor(Math.random()*4)] = faltan;
+  }
+
+  opciones.forEach(num => {
+    let btn = document.createElement("button");
+    btn.className = "boton";
+    btn.innerText = num;
+    btn.onclick = () => verificar(num);
+    opcionesDiv.appendChild(btn);
+  });
+}
+
+function verificar(valor){
+
+  if(valor === faltan){
+
+    buenas++;
+
+    document.getElementById("feedback").innerHTML = "👏";
+
+    mostrarRespuesta();
+
+    setTimeout(siguiente, 1500);
+
+  } else {
+
+    intentos++;
+
+    document.getElementById("feedback").innerHTML = "😢";
+
+    if(intentos >= 2){
+      setTimeout(siguiente, 1500);
+    }
+  }
+}
+
+function mostrarRespuesta(){
+
+  let marco = document.getElementById("marco");
+
+  let celdas = marco.children;
+
+  for(let celda of celdas){
+    if(celda.children.length === 0){
+      let c = document.createElement("div");
+      c.className = "circulo circulo-verde";
+      celda.appendChild(c);
+    }
+  }
+}
+
+function terminar(){
+
+  document.getElementById("actividad").classList.add("oculto");
+  document.getElementById("resultado").classList.remove("oculto");
+
+  document.getElementById("resumen").innerText =
+    "Respuestas correctas: " + buenas + " de " + total;
+}
+
+</script>
+
+</body>
+</html>
