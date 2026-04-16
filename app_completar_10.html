@@ -16,17 +16,32 @@ body{
     margin-top:20px;
 }
 
-/* MARCO 5x2 (CLAVE) */
+/* PORTADA */
+.portada{
+    margin-top:80px;
+}
+
+.boton{
+    margin:10px;
+    padding:15px 25px;
+    font-size:18px;
+    background:#4CAF50;
+    color:white;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+}
+
+/* MARCO */
 .marco{
     display:grid;
     grid-template-columns: repeat(5,80px);
-    grid-template-rows: repeat(2,80px); /* 👈 ESTO FALTABA */
+    grid-template-rows: repeat(2,80px);
     gap:8px;
     justify-content:center;
     margin-top:30px;
 }
 
-/* CASILLAS */
 .casilla{
     width:80px;
     height:80px;
@@ -37,7 +52,6 @@ body{
     background:#ddd;
 }
 
-/* PUNTOS */
 .punto{
     width:40px;
     height:40px;
@@ -49,29 +63,17 @@ body{
     background:green;
 }
 
-/* BOTONES */
-.boton{
-    margin:10px;
-    padding:15px 20px;
-    font-size:18px;
-    background:#4CAF50;
-    color:white;
-    border:none;
-    border-radius:10px;
-    cursor:pointer;
+.mensaje{
+    font-size:22px;
+    margin-top:15px;
+    height:30px;
 }
 </style>
 </head>
 
 <body>
 
-<img src="logo.png" class="logo">
-
-<h2>¿Cuántas faltan para completar 10?</h2>
-<p id="info"></p>
-
-<div id="marco" class="marco"></div>
-<div id="botones"></div>
+<div id="pantalla"></div>
 
 <script>
 
@@ -80,7 +82,22 @@ let total = 20;
 let cantidad = 0;
 let respuestaCorrecta = 0;
 let aciertos = 0;
+let anterior = -1;
 
+/* PORTADA */
+function iniciarApp(){
+    document.getElementById("pantalla").innerHTML = `
+        <div class="portada">
+            <img src="logo.png" class="logo">
+            <h1>Didactimat</h1>
+            <p><b>Nivel:</b> Kinder</p>
+            <p><b>Habilidad:</b> reconocer cantidades y completar hasta 10</p>
+            <button class="boton" onclick="nuevoEjercicio()">INICIAR</button>
+        </div>
+    `;
+}
+
+/* NUEVO EJERCICIO */
 function nuevoEjercicio(){
 
     ejercicio++;
@@ -90,40 +107,71 @@ function nuevoEjercicio(){
         return;
     }
 
-    cantidad = Math.floor(Math.random()*4)+6; // 6 a 9
+    /* evita repetir mismo número */
+    do{
+        cantidad = Math.floor(Math.random()*4)+6; // 6 a 9
+    }while(cantidad === anterior);
+
+    anterior = cantidad;
+
     respuestaCorrecta = 10 - cantidad;
 
-    document.getElementById("info").innerText = "Ejercicio " + ejercicio + " de 20";
+    let html = `
+        <img src="logo.png" class="logo">
+        <h2>¿Cuántas faltan para completar 10?</h2>
+        <p>Ejercicio ${ejercicio} de 20</p>
+        <div id="marco" class="marco"></div>
+        <div id="botones"></div>
+        <div id="mensaje" class="mensaje"></div>
+    `;
+
+    document.getElementById("pantalla").innerHTML = html;
 
     let marco = document.getElementById("marco");
-    marco.innerHTML = "";
 
-    let totalCasillas = 10;
+    let arriba = Array(5).fill(0);
+    let abajo = Array(5).fill(0);
 
-    for(let i=0;i<totalCasillas;i++){
-        let div = document.createElement("div");
-        div.className="casilla";
+    let extra = cantidad - 5;
 
-        if(i < cantidad){
-            div.innerHTML = '<div class="punto"></div>';
-        }
+    let arribaCompleta = Math.random() < 0.5;
 
-        marco.appendChild(div);
+    if(arribaCompleta){
+        arriba = Array(5).fill(1);
+        for(let i=0;i<extra;i++) abajo[i]=1;
+    }else{
+        abajo = Array(5).fill(1);
+        for(let i=0;i<extra;i++) arriba[i]=1;
     }
 
+    let distribucion = arriba.concat(abajo);
+
+    distribucion.forEach(v=>{
+        let div = document.createElement("div");
+        div.className="casilla";
+        if(v===1){
+            div.innerHTML='<div class="punto"></div>';
+        }
+        marco.appendChild(div);
+    });
+
     let botones = document.getElementById("botones");
-    botones.innerHTML="";
 
     for(let i=1;i<=5;i++){
         botones.innerHTML += `<button class="boton" onclick="verificar(${i})">${i}</button>`;
     }
 }
 
+/* VERIFICAR */
 function verificar(resp){
+
+    let mensaje = document.getElementById("mensaje");
 
     if(resp == respuestaCorrecta){
 
         aciertos++;
+
+        mensaje.innerHTML = "¡Bien!";
 
         mostrarSolucion();
 
@@ -132,10 +180,11 @@ function verificar(resp){
         },1200);
 
     }else{
-        alert("Intenta nuevamente");
+        mensaje.innerHTML = "Intenta nuevamente";
     }
 }
 
+/* MOSTRAR SOLUCIÓN */
 function mostrarSolucion(){
 
     let casillas = document.querySelectorAll(".casilla");
@@ -144,7 +193,6 @@ function mostrarSolucion(){
     let contador = 0;
 
     for(let i=0;i<casillas.length;i++){
-
         if(casillas[i].innerHTML==="" && contador < faltan){
             casillas[i].innerHTML = '<div class="punto verde"></div>';
             contador++;
@@ -152,16 +200,24 @@ function mostrarSolucion(){
     }
 }
 
+/* FINAL */
 function mostrarFinal(){
 
-    document.body.innerHTML = `
+    document.getElementById("pantalla").innerHTML = `
         <h1>RESULTADOS</h1>
         <p>Respuestas correctas: ${aciertos} de 20</p>
-        <button class="boton" onclick="location.reload()">REINICIAR</button>
+        <button class="boton" onclick="reiniciar()">REINICIAR</button>
     `;
 }
 
-nuevoEjercicio();
+function reiniciar(){
+    ejercicio = 0;
+    aciertos = 0;
+    iniciarApp();
+}
+
+/* INICIO */
+iniciarApp();
 
 </script>
 
