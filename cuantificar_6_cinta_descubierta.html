@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Calcumat Kinder – Cinta Descubierta</title>
+
+<style>
+body{
+    font-family: Arial;
+    text-align:center;
+    background:white;
+}
+
+.logo{
+    width:120px;
+    margin-top:20px;
+}
+
+.cinta{
+    display:flex;
+    justify-content:center;
+    margin-top:30px;
+}
+
+.casilla{
+    width:80px;
+    height:80px;
+    border:2px solid black;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    background:#eee;
+}
+
+.numero{
+    font-size:22px;
+    margin-top:5px;
+}
+
+.punto{
+    width:35px;
+    height:35px;
+    border-radius:50%;
+    background:red;
+    margin-bottom:5px;
+}
+
+.boton{
+    margin:8px;
+    padding:12px 18px;
+    font-size:18px;
+    background:#4CAF50;
+    color:white;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+}
+
+.feedback{
+    font-size:20px;
+    margin-top:15px;
+    height:30px;
+}
+</style>
+
+</head>
+
+<body>
+
+<img src="logo.png" class="logo">
+
+<h2>¿Cuántos hay?</h2>
+<p id="info"></p>
+
+<div id="cinta"></div>
+
+<div id="botones"></div>
+
+<div id="feedback" class="feedback"></div>
+
+<script>
+
+let ejercicio = 0;
+let total = 20;
+let cantidad = 0;
+let aciertos = 0;
+
+function nuevoEjercicio(){
+
+    ejercicio++;
+
+    if(ejercicio > total){
+        mostrarFinal();
+        return;
+    }
+
+    document.getElementById("feedback").innerText = "";
+
+    cantidad = Math.floor(Math.random()*6)+1; // 1 a 6
+
+    document.getElementById("info").innerText = "Ejercicio " + ejercicio + " de 20";
+
+    let cinta = document.getElementById("cinta");
+    cinta.innerHTML = "";
+
+    for(let i=1;i<=6;i++){
+
+        let div = document.createElement("div");
+        div.className="casilla";
+
+        if(i <= cantidad){
+            div.innerHTML = '<div class="punto"></div><div class="numero">'+i+'</div>';
+        }else{
+            div.innerHTML = '<div class="numero">'+i+'</div>';
+        }
+
+        cinta.appendChild(div);
+    }
+
+    let botones = document.getElementById("botones");
+    botones.innerHTML="";
+
+    for(let i=1;i<=6;i++){
+        botones.innerHTML += `<button class="boton" onclick="verificar(${i})">${i}</button>`;
+    }
+}
+
+function verificar(resp){
+
+    if(resp == cantidad){
+        aciertos++;
+        document.getElementById("feedback").innerText = "¡Bien!";
+
+        setTimeout(()=>{
+            nuevoEjercicio();
+        },1000);
+
+    }else{
+        document.getElementById("feedback").innerText = "Intenta nuevamente";
+    }
+}
+
+function mostrarFinal(){
+
+    document.body.innerHTML = `
+        <img src="logo.png" class="logo">
+        <h1>RESULTADOS</h1>
+        <p>Respuestas correctas: ${aciertos} de 20</p>
+        <button class="boton" onclick="location.reload()">REINICIAR</button>
+    `;
+}
+
+nuevoEjercicio();
+
+</script>
+
+</body>
+</html>
