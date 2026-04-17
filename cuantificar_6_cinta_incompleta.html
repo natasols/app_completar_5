@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Calcumat Kinder – Cinta Incompleta</title>
+<title>Calcumat Kinder – Cinta incompleta 6</title>
 
 <style>
 body{
@@ -47,7 +47,6 @@ body{
     align-items:center;
     font-size:28px;
     background:white;
-    position:relative;
 }
 
 .punto{
@@ -103,7 +102,7 @@ function iniciarApp(){
             <img src="logo.png" class="logo">
             <h1>Calcumat Kinder</h1>
             <p><b>Nivel:</b> Kinder</p>
-            <p><b>Habilidad:</b> cuantificar hasta 6 en cinta incompleta</p>
+            <p><b>Habilidad:</b> inferir cantidad en cinta incompleta</p>
             <button class="boton" onclick="nuevoEjercicio()">INICIAR</button>
         </div>
     `;
@@ -143,11 +142,11 @@ function nuevoEjercicio(){
         let div = document.createElement("div");
         div.className="casilla";
 
-        if(i <= cantidad){
+        if(i < cantidad){
             div.innerHTML = `<div class="punto"></div>`;
         }
         else if(i === cantidad){
-            div.innerHTML = ""; // casilla en blanco (número oculto)
+            div.innerHTML = ""; // 🔥 número oculto clave
         }
         else{
             div.innerText = i;
