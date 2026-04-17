@@ -139,6 +139,25 @@ function nuevoEjercicio(){
 
     for(let i=1;i<=6;i++){
 
+    let div = document.createElement("div");
+    div.className="casilla";
+
+    if(i < cantidad){
+        // fichas normales
+        div.innerHTML = `<div class="punto"></div>`;
+    }
+    else if(i === cantidad){
+        // 🔥 casilla oculta (NO mostrar número)
+        div.innerHTML = "";
+    }
+    else{
+        // números visibles después
+        div.innerText = i;
+    }
+
+    cinta.appendChild(div);
+}
+
         let div = document.createElement("div");
         div.className="casilla";
 
