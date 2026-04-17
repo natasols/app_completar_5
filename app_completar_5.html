@@ -96,6 +96,18 @@ body {
 </div>
 
 <script>
+  function hablar(texto){
+    let mensaje = new SpeechSynthesisUtterance(texto);
+    mensaje.lang = "es-ES";
+    mensaje.rate = 0.8;
+    mensaje.pitch = 1.1;
+
+    let voces = speechSynthesis.getVoices();
+    let voz = voces.find(v => v.lang.startsWith("es"));
+    if(voz) mensaje.voice = voz;
+
+    speechSynthesis.speak(mensaje);
+}
 
 let total = 20;
 let actual = 0;
