@@ -181,17 +181,16 @@ function verificar(resp){
         let casillas = document.querySelectorAll(".casilla");
 
         let casillaFicha = casillas[cantidad - 1];
-        let casillaVacia = casillas[cantidad];
 
-        // 🔴 seleccionar la ficha real
+        // 🔴 tomar la ficha real
         let ficha = casillaFicha.querySelector(".punto");
 
-        // 🔥 mover la ficha (no duplicar)
+        // 🔥 mover la ficha hacia arriba
         ficha.style.position = "absolute";
         ficha.style.top = "-60px";
 
-        // 🔢 revelar número oculto
-        casillaVacia.innerText = cantidad + 1;
+        // 🔢 mostrar el número debajo
+        casillaFicha.innerHTML += `<span>${cantidad}</span>`;
 
     }else{
 
@@ -201,7 +200,6 @@ function verificar(resp){
 
     setTimeout(nuevoEjercicio,1500);
 }
-
 /* FINAL */
 function mostrarFinal(){
     document.getElementById("pantalla").innerHTML = `
