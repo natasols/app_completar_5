@@ -2,101 +2,79 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Didactimat - Completar 5</title>
+<title>Didactimat – Completar 5</title>
 
 <style>
-body {
-  font-family: Arial;
-  text-align: center;
-  background-color: white;
+body{
+    font-family: Arial;
+    text-align:center;
 }
 
-.logo {
-  width: 120px;
-  margin-top: 20px;
+.logo{
+    width:120px;
+    margin-top:20px;
 }
 
-.marco {
-  display: grid;
-  grid-template-columns: repeat(5, 100px);
-  justify-content: center;
-  border: 6px solid black;
-  width: fit-content;
-  margin: 20px auto;
+.portada{
+    margin-top:80px;
 }
 
-.celda {
-  width: 100px;
-  height: 100px;
-  border-right: 4px solid black;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.boton{
+    margin:10px;
+    padding:15px 25px;
+    font-size:18px;
+    background:#4CAF50;
+    color:white;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
 }
 
-.celda:last-child {
-  border-right: none;
+.marco{
+    display:grid;
+    grid-template-columns: repeat(5,80px);
+    gap:8px;
+    justify-content:center;
+    margin-top:30px;
 }
 
-.circulo {
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  background-color: red;
-  border: 4px solid black;
+.casilla{
+    width:80px;
+    height:80px;
+    border:2px solid black;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:#ddd;
 }
 
-.circulo-verde {
-  background-color: green;
+.punto{
+    width:40px;
+    height:40px;
+    border-radius:50%;
+    background:red;
 }
 
-.boton {
-  font-size: 22px;
-  padding: 10px 20px;
-  margin: 10px;
+.verde{
+    background:green;
 }
 
-.oculto {
-  display: none;
+.mensaje{
+    font-size:22px;
+    margin-top:15px;
+    height:30px;
 }
 </style>
-
 </head>
 
 <body>
 
-<!-- PORTADA -->
-<div id="portada">
-  <img src="logo.png" class="logo">
-  <h2>Nivel: Kínder</h2>
-  <h3>Habilidad: Reconocer de inmediato cantidades hasta 5</h3>
-  <button class="boton" onclick="iniciar()">INICIAR</button>
-</div>
-
-<!-- ACTIVIDAD -->
-<div id="actividad" class="oculto">
-
-  <img src="logo.png" class="logo">
-
-  <h1>¿Cuántos faltan para completar 5?</h1>
-
-  <div id="marco" class="marco"></div>
-
-  <div id="opciones"></div>
-
-  <div id="feedback" style="font-size:40px;"></div>
-
-</div>
-
-<!-- RESULTADO -->
-<div id="resultado" class="oculto">
-  <h1>RESULTADOS</h1>
-  <h2 id="resumen"></h2>
-  <button class="boton" onclick="location.reload()">REINICIAR</button>
-</div>
+<div id="pantalla"></div>
 
 <script>
-  function hablar(texto){
+
+/* 🔊 VOZ */
+function hablar(texto){
     let mensaje = new SpeechSynthesisUtterance(texto);
     mensaje.lang = "es-ES";
     mensaje.rate = 0.8;
@@ -109,126 +87,137 @@ body {
     speechSynthesis.speak(mensaje);
 }
 
+/* VARIABLES */
+let ejercicio = 0;
 let total = 20;
-let actual = 0;
-let buenas = 0;
-let intentos = 0;
+let cantidad = 0;
+let respuestaCorrecta = 0;
+let aciertos = 0;
+let anterior = -1;
 
-let cantidad, faltan;
-
-function iniciar(){
-  document.getElementById("portada").classList.add("oculto");
-  document.getElementById("actividad").classList.remove("oculto");
-  siguiente();
+/* PORTADA */
+function iniciarApp(){
+    document.getElementById("pantalla").innerHTML = `
+        <div class="portada">
+            <img src="logo.png" class="logo">
+            <h1>Didactimat</h1>
+            <p><b>Nivel:</b> Kinder</p>
+            <p><b>Habilidad:</b> completar hasta 5</p>
+            <button class="boton" onclick="nuevoEjercicio()">INICIAR</button>
+        </div>
+    `;
 }
 
-function siguiente(){
+/* NUEVO EJERCICIO */
+function nuevoEjercicio(){
 
-  if(actual >= total){
-    terminar();
-    return;
-  }
+    ejercicio++;
 
-  actual++;
-  intentos = 0;
-
-  cantidad = Math.floor(Math.random() * 5);
-  faltan = 5 - cantidad;
-
-  dibujarMarco();
-  dibujarOpciones();
-
-  document.getElementById("feedback").innerHTML = "";
-}
-
-function dibujarMarco(){
-
-  let marco = document.getElementById("marco");
-  marco.innerHTML = "";
-
-  let posiciones = [...Array(5).keys()].sort(() => Math.random() - 0.5);
-
-  for(let i = 0; i < 5; i++){
-    let celda = document.createElement("div");
-    celda.className = "celda";
-
-    if(posiciones.slice(0, cantidad).includes(i)){
-      let c = document.createElement("div");
-      c.className = "circulo";
-      celda.appendChild(c);
+    if(ejercicio > total){
+        mostrarFinal();
+        return;
     }
 
-    marco.appendChild(celda);
-  }
-}
+    do{
+        cantidad = Math.floor(Math.random()*4)+1; // 1 a 4
+    }while(cantidad === anterior);
 
-function dibujarOpciones(){
+    anterior = cantidad;
 
-  let opcionesDiv = document.getElementById("opciones");
-  opcionesDiv.innerHTML = "";
+    respuestaCorrecta = 5 - cantidad;
 
-  let opciones = [0,1,2,3,4].sort(() => Math.random() - 0.5).slice(0,4);
+    let html = `
+        <img src="logo.png" class="logo">
+        <h2>¿Cuántas faltan para completar 5?</h2>
+        <p>Ejercicio ${ejercicio} de 20</p>
+        <div id="marco" class="marco"></div>
+        <div id="botones"></div>
+        <div id="mensaje" class="mensaje"></div>
+    `;
 
-  if(!opciones.includes(faltan)){
-    opciones[Math.floor(Math.random()*4)] = faltan;
-  }
+    document.getElementById("pantalla").innerHTML = html;
 
-  opciones.forEach(num => {
-    let btn = document.createElement("button");
-    btn.className = "boton";
-    btn.innerText = num;
-    btn.onclick = () => verificar(num);
-    opcionesDiv.appendChild(btn);
-  });
-}
+    let marco = document.getElementById("marco");
 
-function verificar(valor){
+    for(let i=0;i<5;i++){
+        let div = document.createElement("div");
+        div.className="casilla";
 
-  if(valor === faltan){
+        if(i < cantidad){
+            div.innerHTML='<div class="punto"></div>';
+        }
 
-    buenas++;
-
-    document.getElementById("feedback").innerHTML = "👏";
-
-    mostrarRespuesta();
-
-    setTimeout(siguiente, 1500);
-
-  } else {
-
-    intentos++;
-
-    document.getElementById("feedback").innerHTML = "😢";
-
-    if(intentos >= 2){
-      setTimeout(siguiente, 1500);
+        marco.appendChild(div);
     }
-  }
-}
 
-function mostrarRespuesta(){
+    let botones = document.getElementById("botones");
 
-  let marco = document.getElementById("marco");
-
-  let celdas = marco.children;
-
-  for(let celda of celdas){
-    if(celda.children.length === 0){
-      let c = document.createElement("div");
-      c.className = "circulo circulo-verde";
-      celda.appendChild(c);
+    for(let i=1;i<=4;i++){
+        botones.innerHTML += `<button class="boton" onclick="verificar(${i})">${i}</button>`;
     }
-  }
 }
 
-function terminar(){
+/* VERIFICAR */
+function verificar(resp){
 
-  document.getElementById("actividad").classList.add("oculto");
-  document.getElementById("resultado").classList.remove("oculto");
+    let mensaje = document.getElementById("mensaje");
 
-  document.getElementById("resumen").innerText =
-    "Respuestas correctas: " + buenas + " de " + total;
+    let botones = document.querySelectorAll(".boton");
+    botones.forEach(b => b.disabled = true);
+
+    if(resp == respuestaCorrecta){
+
+        aciertos++;
+
+        mensaje.innerText = "¡Bien!";
+
+        mostrarSolucion();
+
+        hablar("Bien. Faltan " + respuestaCorrecta + " fichas para completar 5");
+
+    }else{
+
+        mensaje.innerText = "Intenta nuevamente";
+
+        hablar("Intenta nuevamente");
+    }
+
+    setTimeout(nuevoEjercicio,1500);
 }
+
+/* SOLUCIÓN */
+function mostrarSolucion(){
+
+    let casillas = document.querySelectorAll(".casilla");
+
+    let faltan = respuestaCorrecta;
+    let contador = 0;
+
+    for(let i=0;i<casillas.length;i++){
+        if(casillas[i].innerHTML==="" && contador < faltan){
+            casillas[i].innerHTML = '<div class="punto verde"></div>';
+            contador++;
+        }
+    }
+}
+
+/* FINAL */
+function mostrarFinal(){
+    document.getElementById("pantalla").innerHTML = `
+        <h1>RESULTADOS</h1>
+        <p>Respuestas correctas: ${aciertos} de 20</p>
+        <button class="boton" onclick="reiniciar()">REINICIAR</button>
+    `;
+}
+
+function reiniciar(){
+    ejercicio = 0;
+    aciertos = 0;
+    iniciarApp();
+}
+
+/* INICIO */
+iniciarApp();
 
 </script>
 
