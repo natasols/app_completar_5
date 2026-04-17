@@ -17,12 +17,28 @@ body{
     margin-top:20px;
 }
 
-/* 🔥 CINTA CORREGIDA (horizontal SIEMPRE) */
+/* PORTADA */
+#portada{
+    margin-top:100px;
+}
+
+.iniciar{
+    margin-top:30px;
+    padding:15px 25px;
+    font-size:20px;
+    background:#4CAF50;
+    color:white;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+}
+
+/* CINTA */
 .cinta{
     display:grid;
     grid-template-columns: repeat(6,80px);
     justify-content:center;
-    margin-top:30px;
+    margin-top:10px;
 }
 
 .casilla{
@@ -30,15 +46,21 @@ body{
     height:80px;
     border:2px solid black;
     display:flex;
-    flex-direction:column;
     justify-content:center;
     align-items:center;
-    background:#eee;
+    background:white; /* 👈 blanca */
 }
 
 .numero{
-    font-size:22px;
-    margin-top:5px;
+    font-size:28px; /* 👈 más grande */
+}
+
+/* FILA DE PUNTOS */
+.puntos{
+    display:grid;
+    grid-template-columns: repeat(6,80px);
+    justify-content:center;
+    margin-top:30px;
 }
 
 .punto{
@@ -46,11 +68,12 @@ body{
     height:35px;
     border-radius:50%;
     background:red;
-    margin-bottom:5px;
+    margin:auto;
 }
 
+/* BOTONES */
 .boton{
-    margin:8px;
+    margin:10px;
     padding:12px 18px;
     font-size:18px;
     background:#4CAF50;
@@ -58,6 +81,10 @@ body{
     border:none;
     border-radius:10px;
     cursor:pointer;
+}
+
+#botones{
+    margin-top:40px; /* 👈 más abajo */
 }
 
 .feedback{
@@ -71,16 +98,28 @@ body{
 
 <body>
 
-<img src="logo.png" class="logo">
+<div id="portada">
+    <img src="logo.png" class="logo">
+    <h1>Calcumat Kinder</h1>
+    <p><strong>Nivel:</strong> Kinder</p>
+    <p><strong>Habilidad:</strong> cuantificar hasta 6 en la cinta numerada descubierta</p>
+    <button class="iniciar" onclick="iniciar()">INICIAR</button>
+</div>
 
-<h2>¿Cuántos hay?</h2>
-<p id="info"></p>
+<div id="app" style="display:none;">
+    <img src="logo.png" class="logo">
+    <h2>¿Cuántos hay?</h2>
+    <p id="info"></p>
 
+```
+<div id="puntos" class="puntos"></div>
 <div id="cinta" class="cinta"></div>
 
 <div id="botones"></div>
-
 <div id="feedback" class="feedback"></div>
+```
+
+</div>
 
 <script>
 
@@ -88,6 +127,12 @@ let ejercicio = 0;
 let total = 20;
 let cantidad = 0;
 let aciertos = 0;
+
+function iniciar(){
+    document.getElementById("portada").style.display="none";
+    document.getElementById("app").style.display="block";
+    nuevoEjercicio();
+}
 
 function nuevoEjercicio(){
 
@@ -100,25 +145,30 @@ function nuevoEjercicio(){
 
     document.getElementById("feedback").innerText = "";
 
-    cantidad = Math.floor(Math.random()*6)+1; // 1 a 6
+    cantidad = Math.floor(Math.random()*6)+1;
 
     document.getElementById("info").innerText = "Ejercicio " + ejercicio + " de 20";
 
     let cinta = document.getElementById("cinta");
+    let puntos = document.getElementById("puntos");
+
     cinta.innerHTML = "";
+    puntos.innerHTML = "";
 
     for(let i=1;i<=6;i++){
 
-        let div = document.createElement("div");
-        div.className="casilla";
-
+        // PUNTOS ARRIBA
+        let puntoDiv = document.createElement("div");
         if(i <= cantidad){
-            div.innerHTML = '<div class="punto"></div><div class="numero">'+i+'</div>';
-        }else{
-            div.innerHTML = '<div class="numero">'+i+'</div>';
+            puntoDiv.innerHTML = '<div class="punto"></div>';
         }
+        puntos.appendChild(puntoDiv);
 
-        cinta.appendChild(div);
+        // CINTA ABAJO
+        let casilla = document.createElement("div");
+        casilla.className="casilla";
+        casilla.innerHTML = '<div class="numero">'+i+'</div>';
+        cinta.appendChild(casilla);
     }
 
     let botones = document.getElementById("botones");
@@ -153,8 +203,6 @@ function mostrarFinal(){
         <button class="boton" onclick="location.reload()">REINICIAR</button>
     `;
 }
-
-nuevoEjercicio();
 
 </script>
 
