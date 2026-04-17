@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Calcumat Kinder – Cinta Incompleta</title>
+
+<style>
+body{
+    font-family: Arial;
+    text-align:center;
+    background:white;
+}
+
+.logo{
+    width:120px;
+    margin-top:20px;
+}
+
+/* PORTADA */
+#portada{
+    margin-top:100px;
+}
+
+.iniciar{
+    margin-top:30px;
+    padding:15px 25px;
+    font-size:20px;
+    background:#4CAF50;
+    color:white;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+}
+
+/* PUNTOS */
+.puntos{
+    display:grid;
+    grid-template-columns: repeat(6,80px);
+    justify-content:center;
+    margin-top:40px;
+}
+
+.punto{
+    width:60px;
+    height:60px;
+    border-radius:50%;
+    background:red;
+    margin:auto;
+}
+
+/* CINTA */
+.cinta{
+    display:grid;
+    grid-template-columns: repeat(6,80px);
+    justify-content:center;
+    margin-top:10px;
+}
+
+.casilla{
+    width:80px;
+    height:80px;
+    border:2px solid black;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:white;
+}
+
+.numero{
+    font-size:30px;
+}
+
+/* BOTONES */
+#botones{
+    margin-top:50px;
+}
+
+.boton{
+    margin:8px;
+    padding:12px 18px;
+    font-size:18px;
+    background:#4CAF50;
+    color:white;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+}
+
+.feedback{
+    font-size:20px;
+    margin-top:15px;
+    height:30px;
+}
+</style>
+
+</head>
+
+<body>
+
+<!-- PORTADA -->
+
+<div id="portada">
+    <img src="logo.png" class="logo">
+    <h1>Calcumat Kinder</h1>
+    <p><strong>Nivel:</strong> Kinder</p>
+    <p><strong>Habilidad:</strong> cuantificar hasta 6 en cinta incompleta</p>
+    <button class="iniciar" onclick="iniciar()">INICIAR</button>
+</div>
+
+<!-- APP -->
+
+<div id="app" style="display:none;">
+    <img src="logo.png" class="logo">
+    <h2>¿Cuántos hay?</h2>
+    <p id="info"></p>
+
+```
+<div id="puntos" class="puntos"></div>
+<div id="cinta" class="cinta"></div>
+
+<div id="botones"></div>
+<div id="feedback" class="feedback"></div>
+```
+
+</div>
+
+<script>
+
+let ejercicio = 0;
+let total = 20;
+let cantidad = 0;
+let aciertos = 0;
+let respondido = false;
+
+function iniciar(){
+    document.getElementById("portada").style.display="none";
+    document.getElementById("app").style.display="block";
+    nuevoEjercicio();
+}
+
+function nuevoEjercicio(){
+
+    ejercicio++;
+
+    if(ejercicio > total){
+        mostrarFinal();
+        return;
+    }
+
+    respondido = false;
+    document.getElementById("feedback").innerText = "";
+
+    cantidad = Math.floor(Math.random()*6)+1;
+
+    document.getElementById("info").innerText = "Ejercicio " + ejercicio + " de 20";
+
+    let cinta = document.getElementById("cinta");
+    let puntos = document.getElementById("puntos");
+
+    cinta.innerHTML = "";
+    puntos.innerHTML = "";
+
+    for(let i=1;i<=6;i++){
+
+        // PUNTOS
+        let puntoDiv = document.createElement("div");
+        if(i <= cantidad){
+            puntoDiv.innerHTML = '<div class="punto"></div>';
+        }
+        puntos.appendChild(puntoDiv);
+
+        // CINTA
+        let casilla = document.createElement("div");
+        casilla.className="casilla";
+
+        if(i === cantidad){
+            casilla.innerHTML = '<div class="numero"></div>'; // 🔥 número oculto
+        }else{
+            casilla.innerHTML = '<div class="numero">'+i+'</div>';
+        }
+
+        cinta.appendChild(casilla);
+    }
+
+    let botones = document.getElementById("botones");
+    botones.innerHTML="";
+
+    for(let i=1;i<=6;i++){
+        botones.innerHTML += `<button class="boton" onclick="verificar(${i})">${i}</button>`;
+    }
+}
+
+function verificar(resp){
+
+    if(respondido) return;
+
+    respondido = true;
+
+    if(resp == cantidad){
+        aciertos++;
+        document.getElementById("feedback").innerText = "¡Bien!";
+    }else{
+        document.getElementById("feedback").innerText = "Intenta nuevamente";
+    }
+
+    setTimeout(()=>{
+        nuevoEjercicio();
+    },1200);
+}
+
+function mostrarFinal(){
+
+    document.body.innerHTML = `
+        <img src="logo.png" class="logo">
+        <h1>RESULTADOS</h1>
+        <p>Respuestas correctas: ${aciertos} de 20</p>
+        <button class="boton" onclick="location.reload()">REINICIAR</button>
+    `;
+}
+
+</script>
+
+</body>
+</html>
