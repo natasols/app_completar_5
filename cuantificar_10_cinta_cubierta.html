@@ -90,6 +90,13 @@ let cantidad = 0;
 let aciertos = 0;
 let ultimoIndex = 0;
 
+/* 🔊 FUNCIÓN DE VOZ */
+function hablarNumero(num){
+    let mensaje = new SpeechSynthesisUtterance(num.toString());
+    mensaje.lang = "es-ES"; 
+    speechSynthesis.speak(mensaje);
+}
+
 /* PORTADA */
 function mostrarPortada(){
     document.getElementById("app").innerHTML = `
@@ -149,12 +156,11 @@ function nuevoEjercicio(){
     document.getElementById("app").innerHTML = html;
 }
 
-/* VERIFICAR (1 SOLO INTENTO) */
+/* VERIFICAR */
 function verificar(resp){
 
     let mensaje = document.getElementById("mensaje");
 
-    // bloquear botones
     let botones = document.querySelectorAll(".boton");
     botones.forEach(b => b.disabled = true);
 
@@ -171,13 +177,16 @@ function verificar(resp){
             <div class="ficha-extra"></div>
         `;
 
+        // 🔊 AQUÍ SUENA EL NÚMERO
+        hablarNumero(cantidad);
+
     }else{
 
         mensaje.innerText = "Intenta nuevamente";
 
     }
 
-    setTimeout(nuevoEjercicio,1200);
+    setTimeout(nuevoEjercicio,1500);
 }
 
 /* FINAL */
