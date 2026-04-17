@@ -91,9 +91,22 @@ let aciertos = 0;
 let ultimoIndex = 0;
 
 /* 🔊 FUNCIÓN DE VOZ */
-function hablarNumero(num){
-    let mensaje = new SpeechSynthesisUtterance(num.toString());
-    mensaje.lang = "es-ES"; 
+function hablar(texto){
+
+    let mensaje = new SpeechSynthesisUtterance(texto);
+
+    mensaje.lang = "es-ES";
+    mensaje.rate = 0.8;
+    mensaje.pitch = 1.1;
+
+    let voces = speechSynthesis.getVoices();
+
+    let vozEspanol = voces.find(v => v.lang.startsWith("es"));
+
+    if(vozEspanol){
+        mensaje.voice = vozEspanol;
+    }
+
     speechSynthesis.speak(mensaje);
 }
 
@@ -156,7 +169,7 @@ function nuevoEjercicio(){
     document.getElementById("app").innerHTML = html;
 }
 
-/* VERIFICAR */
+/* VERIFICAR (UN SOLO INTENTO) */
 function verificar(resp){
 
     let mensaje = document.getElementById("mensaje");
@@ -177,16 +190,16 @@ function verificar(resp){
             <div class="ficha-extra"></div>
         `;
 
-        // 🔊 AQUÍ SUENA EL NÚMERO
-        hablarNumero(cantidad);
+        hablar("Bien. Hay " + cantidad + " fichas");
 
     }else{
 
         mensaje.innerText = "Intenta nuevamente";
+        hablar("Intenta nuevamente");
 
     }
 
-    setTimeout(nuevoEjercicio,1500);
+    setTimeout(nuevoEjercicio,1800);
 }
 
 /* FINAL */
