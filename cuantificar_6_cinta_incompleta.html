@@ -179,16 +179,20 @@ function verificar(resp){
 
         let casillas = document.querySelectorAll(".casilla");
 
-        let casilla = casillas[cantidad - 1]; // última ficha
+        let casillaFicha = casillas[cantidad - 1];   // donde está la última ficha
+        let casillaVacia = casillas[cantidad];       // donde estaba el número oculto
 
-        // 🔥 mostrar número + levantar ficha
-        casilla.innerHTML = `
-            ${cantidad}
+        // 🔴 mantener ficha original y agregar una copia arriba
+        casillaFicha.innerHTML = `
+            <div class="punto"></div>
             <div class="punto" style="
                 position:absolute;
                 top:-60px;
             "></div>
         `;
+
+        // 🔢 revelar número oculto
+        casillaVacia.innerText = cantidad + 1;
 
     }else{
 
