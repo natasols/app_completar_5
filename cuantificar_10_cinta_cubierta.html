@@ -16,6 +16,10 @@ body{
     margin-top:20px;
 }
 
+.portada{
+    margin-top:60px;
+}
+
 .cinta{
     display:grid;
     grid-template-columns: repeat(10,70px);
@@ -65,6 +69,12 @@ body{
 .opciones{
     margin-top:60px;
 }
+
+.mensaje{
+    margin-top:20px;
+    font-size:20px;
+    font-weight:bold;
+}
 </style>
 </head>
 
@@ -80,12 +90,26 @@ let cantidad = 0;
 let aciertos = 0;
 let ultimoIndex = 0;
 
+/* PORTADA */
+function mostrarPortada(){
+    document.getElementById("app").innerHTML = `
+        <img src="logo.png" class="logo">
+        <div class="portada">
+            <h2>Nivel: Kinder</h2>
+            <p>Habilidad: cuantificar hasta 10 en cinta cubierta</p>
+            <button class="boton" onclick="iniciar()">INICIAR</button>
+        </div>
+    `;
+}
+
+/* INICIO */
 function iniciar(){
     ejercicio = 0;
     aciertos = 0;
     nuevoEjercicio();
 }
 
+/* EJERCICIO */
 function nuevoEjercicio(){
 
     ejercicio++;
@@ -95,7 +119,7 @@ function nuevoEjercicio(){
         return;
     }
 
-    cantidad = Math.floor(Math.random()*9)+1; // 1 a 9
+    cantidad = Math.floor(Math.random()*9)+1;
     ultimoIndex = cantidad - 1;
 
     let html = `
@@ -120,23 +144,24 @@ function nuevoEjercicio(){
         html += `<button class="boton" onclick="verificar(${i})">${i}</button>`;
     }
 
-    html += `</div>`;
+    html += `</div><div id="mensaje" class="mensaje"></div>`;
 
     document.getElementById("app").innerHTML = html;
 }
 
+/* VERIFICAR */
 function verificar(resp){
+
+    let mensaje = document.getElementById("mensaje");
 
     if(resp == cantidad){
 
         aciertos++;
+        mensaje.innerText = "¡Bien!";
 
-        // mostrar número oculto + ficha arriba
         let casillas = document.querySelectorAll(".casilla");
-
         let casilla = casillas[ultimoIndex];
 
-        // mostrar número
         casilla.innerHTML = `
             ${ultimoIndex+1}
             <div class="ficha-extra"></div>
@@ -145,19 +170,21 @@ function verificar(resp){
         setTimeout(nuevoEjercicio,1200);
 
     }else{
-        alert("Intenta nuevamente");
+        mensaje.innerText = "Intenta nuevamente";
     }
 }
 
+/* FINAL */
 function mostrarFinal(){
     document.getElementById("app").innerHTML = `
         <h1>RESULTADOS</h1>
         <p>Respuestas correctas: ${aciertos} de 20</p>
-        <button class="boton" onclick="iniciar()">REINICIAR</button>
+        <button class="boton" onclick="mostrarPortada()">REINICIAR</button>
     `;
 }
 
-iniciar();
+/* INICIO */
+mostrarPortada();
 
 </script>
 
