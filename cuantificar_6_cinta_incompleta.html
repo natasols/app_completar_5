@@ -180,17 +180,15 @@ function verificar(resp){
 
         let casillas = document.querySelectorAll(".casilla");
 
-        let casillaFicha = casillas[cantidad - 1];   // donde está la última ficha
-        let casillaVacia = casillas[cantidad];       // donde estaba el número oculto
+        let casillaFicha = casillas[cantidad - 1];
+        let casillaVacia = casillas[cantidad];
 
-        // 🔴 mantener ficha original y agregar una copia arriba
-        casillaFicha.innerHTML = `
-            <div class="punto"></div>
-            <div class="punto" style="
-                position:absolute;
-                top:-60px;
-            "></div>
-        `;
+        // 🔴 seleccionar la ficha real
+        let ficha = casillaFicha.querySelector(".punto");
+
+        // 🔥 mover la ficha (no duplicar)
+        ficha.style.position = "absolute";
+        ficha.style.top = "-60px";
 
         // 🔢 revelar número oculto
         casillaVacia.innerText = cantidad + 1;
