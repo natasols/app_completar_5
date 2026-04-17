@@ -17,8 +17,10 @@ body{
     margin-top:20px;
 }
 
+/* 🔥 CINTA CORREGIDA (horizontal SIEMPRE) */
 .cinta{
-    display:flex;
+    display:grid;
+    grid-template-columns: repeat(6,80px);
     justify-content:center;
     margin-top:30px;
 }
@@ -74,7 +76,7 @@ body{
 <h2>¿Cuántos hay?</h2>
 <p id="info"></p>
 
-<div id="cinta"></div>
+<div id="cinta" class="cinta"></div>
 
 <div id="botones"></div>
 
