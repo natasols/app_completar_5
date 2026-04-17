@@ -142,14 +142,18 @@ function nuevoEjercicio(){
         let div = document.createElement("div");
         div.className="casilla";
 
-        if(i < cantidad){
+        if(i <= cantidad){
+            // 🔴 siempre hay ficha
             div.innerHTML = `<div class="punto"></div>`;
-        }
-        else if(i === cantidad){
-            div.innerHTML = ""; // 🔥 número oculto clave
-        }
-        else{
+        } 
+        else {
+            // 🔢 números visibles después
             div.innerText = i;
+        }
+
+        // 🔥 ocultar SOLO el número de la última ficha
+        if(i === cantidad){
+            div.innerHTML = `<div class="punto"></div>`; // mantiene ficha (sin número)
         }
 
         cinta.appendChild(div);
