@@ -33,6 +33,22 @@ body{
     cursor:pointer;
 }
 
+/* PUNTOS (ARRIBA) */
+.puntos{
+    display:grid;
+    grid-template-columns: repeat(6,80px);
+    justify-content:center;
+    margin-top:40px;
+}
+
+.punto{
+    width:60px; /* 🔥 más grande */
+    height:60px;
+    border-radius:50%;
+    background:red;
+    margin:auto;
+}
+
 /* CINTA */
 .cinta{
     display:grid;
@@ -48,32 +64,20 @@ body{
     display:flex;
     justify-content:center;
     align-items:center;
-    background:white; /* 👈 blanca */
+    background:white;
 }
 
 .numero{
-    font-size:28px; /* 👈 más grande */
-}
-
-/* FILA DE PUNTOS */
-.puntos{
-    display:grid;
-    grid-template-columns: repeat(6,80px);
-    justify-content:center;
-    margin-top:30px;
-}
-
-.punto{
-    width:35px;
-    height:35px;
-    border-radius:50%;
-    background:red;
-    margin:auto;
+    font-size:30px; /* 🔥 más grande */
 }
 
 /* BOTONES */
+#botones{
+    margin-top:50px;
+}
+
 .boton{
-    margin:10px;
+    margin:8px;
     padding:12px 18px;
     font-size:18px;
     background:#4CAF50;
@@ -81,10 +85,6 @@ body{
     border:none;
     border-radius:10px;
     cursor:pointer;
-}
-
-#botones{
-    margin-top:40px; /* 👈 más abajo */
 }
 
 .feedback{
@@ -98,6 +98,8 @@ body{
 
 <body>
 
+<!-- PORTADA -->
+
 <div id="portada">
     <img src="logo.png" class="logo">
     <h1>Calcumat Kinder</h1>
@@ -105,6 +107,8 @@ body{
     <p><strong>Habilidad:</strong> cuantificar hasta 6 en la cinta numerada descubierta</p>
     <button class="iniciar" onclick="iniciar()">INICIAR</button>
 </div>
+
+<!-- APP -->
 
 <div id="app" style="display:none;">
     <img src="logo.png" class="logo">
@@ -127,6 +131,7 @@ let ejercicio = 0;
 let total = 20;
 let cantidad = 0;
 let aciertos = 0;
+let respondido = false;
 
 function iniciar(){
     document.getElementById("portada").style.display="none";
@@ -143,6 +148,7 @@ function nuevoEjercicio(){
         return;
     }
 
+    respondido = false;
     document.getElementById("feedback").innerText = "";
 
     cantidad = Math.floor(Math.random()*6)+1;
@@ -157,14 +163,12 @@ function nuevoEjercicio(){
 
     for(let i=1;i<=6;i++){
 
-        // PUNTOS ARRIBA
         let puntoDiv = document.createElement("div");
         if(i <= cantidad){
             puntoDiv.innerHTML = '<div class="punto"></div>';
         }
         puntos.appendChild(puntoDiv);
 
-        // CINTA ABAJO
         let casilla = document.createElement("div");
         casilla.className="casilla";
         casilla.innerHTML = '<div class="numero">'+i+'</div>';
@@ -181,17 +185,20 @@ function nuevoEjercicio(){
 
 function verificar(resp){
 
+    if(respondido) return; // 🔥 evita múltiples intentos
+
+    respondido = true;
+
     if(resp == cantidad){
         aciertos++;
         document.getElementById("feedback").innerText = "¡Bien!";
-
-        setTimeout(()=>{
-            nuevoEjercicio();
-        },1000);
-
     }else{
         document.getElementById("feedback").innerText = "Intenta nuevamente";
     }
+
+    setTimeout(()=>{
+        nuevoEjercicio();
+    },1200);
 }
 
 function mostrarFinal(){
