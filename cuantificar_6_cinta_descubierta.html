@@ -31,35 +31,45 @@ body{
     cursor:pointer;
 }
 
-.cinta{
+/* 🔴 FILA DE PUNTOS (arriba) */
+.fila-puntos{
     display:grid;
     grid-template-columns: repeat(6,80px);
     justify-content:center;
     margin-top:30px;
 }
 
+/* 🔢 CINTA NUMÉRICA (abajo) */
+.cinta{
+    display:grid;
+    grid-template-columns: repeat(6,80px);
+    justify-content:center;
+}
+
+/* CASILLAS */
 .casilla{
     width:80px;
-    height:80px;
+    height:60px;
     border:2px solid black;
     display:flex;
-    flex-direction:column;           /* 🔥 clave */
-    justify-content:space-between;   /* 🔥 separa número y ficha */
+    justify-content:center;
     align-items:center;
     font-size:28px;
     background:white;
-    padding:5px 0;
 }
 
+/* NÚMEROS */
 .numero{
     font-weight:bold;
 }
 
+/* 🔴 FICHAS */
 .punto{
     width:45px;
     height:45px;
     border-radius:50%;
     background:red;
+    margin:auto;
 }
 
 .opciones{
@@ -134,34 +144,42 @@ function nuevoEjercicio(){
         <img src="logo.png" class="logo">
         <h2>¿Cuántas hay?</h2>
         <p>Ejercicio ${ejercicio} de 20</p>
+
+        <div id="puntos" class="fila-puntos"></div>
         <div id="cinta" class="cinta"></div>
+
         <div id="botones" class="opciones"></div>
         <div id="mensaje" class="mensaje"></div>
     `;
 
     document.getElementById("pantalla").innerHTML = html;
 
+    let puntos = document.getElementById("puntos");
     let cinta = document.getElementById("cinta");
 
     for(let i=1;i<=6;i++){
 
-        let div = document.createElement("div");
-        div.className="casilla";
+        /* 🔴 FILA DE PUNTOS */
+        let contPunto = document.createElement("div");
 
-        // 🔢 número
-        let numero = document.createElement("div");
-        numero.className = "numero";
-        numero.innerText = i;
-        div.appendChild(numero);
-
-        // 🔴 ficha
         if(i <= cantidad){
             let punto = document.createElement("div");
             punto.className = "punto";
-            div.appendChild(punto);
+            contPunto.appendChild(punto);
         }
 
-        cinta.appendChild(div);
+        puntos.appendChild(contPunto);
+
+        /* 🔢 CINTA NUMÉRICA */
+        let casilla = document.createElement("div");
+        casilla.className="casilla";
+
+        let numero = document.createElement("div");
+        numero.className = "numero";
+        numero.innerText = i;
+
+        casilla.appendChild(numero);
+        cinta.appendChild(casilla);
     }
 
     let botones = document.getElementById("botones");
