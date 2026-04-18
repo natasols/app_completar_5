@@ -51,6 +51,19 @@ body{
     font-size:28px;
 }
 
+/* 🔥 RESALTADO CORRECTO */
+.correcto{
+    background:#4CAF50;
+    color:white;
+    border-radius:10px;
+    animation: aparecer 0.3s ease;
+}
+
+@keyframes aparecer{
+    from{transform:scale(0.7);}
+    to{transform:scale(1);}
+}
+
 .punto{
     width:45px;
     height:45px;
@@ -85,7 +98,6 @@ function hablar(texto){
     speechSynthesis.speak(m);
 }
 
-/* NUEVO EJERCICIO (SOLO PREGUNTA) */
 function nuevoEjercicio(){
 
     cantidad = Math.floor(Math.random()*6)+1;
@@ -103,7 +115,6 @@ function nuevoEjercicio(){
     `;
 }
 
-/* MOSTRAR TODO + RELOJ */
 function iniciarEjercicio(){
 
     let puntos = document.getElementById("puntos");
@@ -129,6 +140,7 @@ function iniciarEjercicio(){
 
         let cas = document.createElement("div");
         cas.className="casilla";
+        cas.id="num"+i; /* 🔥 clave */
         cas.innerText=i;
 
         cinta.appendChild(cas);
@@ -139,7 +151,6 @@ function iniciarEjercicio(){
     setTimeout(ocultarTodo,4000);
 }
 
-/* OCULTAR */
 function ocultarTodo(){
 
     document.getElementById("puntos").classList.add("oculto");
@@ -150,11 +161,14 @@ function ocultarTodo(){
     `;
 }
 
-/* VERIFICAR */
 function mostrarRespuesta(){
 
     document.getElementById("puntos").classList.remove("oculto");
     document.getElementById("cinta").classList.remove("oculto");
+
+    /* 🔥 RESALTAR RESPUESTA */
+    let correcto = document.getElementById("num"+cantidad);
+    correcto.classList.add("correcto");
 
     hablar("Había " + cantidad);
 
@@ -163,7 +177,6 @@ function mostrarRespuesta(){
     `;
 }
 
-/* INICIO */
 nuevoEjercicio();
 
 </script>
