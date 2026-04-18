@@ -87,6 +87,7 @@ body{
 let cantidad = 0;
 let ejercicio = 0;
 let total = 20;
+let avisoMostrado = false;
 
 /* VOZ */
 function hablar(texto){
@@ -109,16 +110,17 @@ function hablar(texto){
 /* NUEVO EJERCICIO */
 function nuevoEjercicio(){
 
+    /* 🔥 AVISO ANTES DEL EJERCICIO 18 */
+    if(ejercicio === 17 && !avisoMostrado){
+        avisoMostrado = true;
+        mostrarAvisoReto();
+        return;
+    }
+
     ejercicio++;
 
     if(ejercicio > total){
         mostrarFinal();
-        return;
-    }
-
-    /* 🔥 AVISO ANTES DE RETOS */
-    if(ejercicio === 18){
-        mostrarAvisoReto();
         return;
     }
 
@@ -143,7 +145,7 @@ function nuevoEjercicio(){
     `;
 }
 
-/* 🔥 PANTALLA DE AVISO */
+/* 🔥 PANTALLA AVISO */
 function mostrarAvisoReto(){
 
     document.getElementById("app").innerHTML = `
@@ -172,7 +174,7 @@ function iniciarEjercicio(esReto){
             cas.innerHTML = `<div class="ficha"></div>`;
         } 
         else if(esReto && i === cantidad + 1){
-            cas.innerHTML = ""; // 🔥 oculto en reto
+            cas.innerHTML = ""; // 🔥 casilla oculta en reto
         }
         else{
             cas.innerText = i;
@@ -230,6 +232,7 @@ function mostrarFinal(){
 
 function reiniciar(){
     ejercicio = 0;
+    avisoMostrado = false;
     nuevoEjercicio();
 }
 
