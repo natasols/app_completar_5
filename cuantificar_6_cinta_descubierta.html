@@ -33,7 +33,6 @@ body{
     color:#555;
 }
 
-/* FILA */
 .fila-puntos{
     display:grid;
     grid-template-columns: repeat(6,80px);
@@ -42,7 +41,6 @@ body{
     margin-bottom:18px;
 }
 
-/* CINTA */
 .cinta{
     display:grid;
     grid-template-columns: repeat(6,80px);
@@ -60,7 +58,7 @@ body{
     position:relative;
 }
 
-/* 🔥 NUEVO: CÍRCULO SUAVE */
+/* CÍRCULO */
 .correcto::after{
     content:"";
     position:absolute;
@@ -70,7 +68,6 @@ body{
     border-radius:50%;
 }
 
-/* PUNTOS */
 .punto{
     width:45px;
     height:45px;
@@ -99,18 +96,15 @@ body{
 let cantidad = 0;
 let ejercicio = 0;
 let total = 20;
-let aciertos = 0;
 
-/* 🔊 VOZ MEJORADA */
+/* VOZ */
 function hablar(texto){
-
     let m = new SpeechSynthesisUtterance(texto);
 
     let voces = speechSynthesis.getVoices();
 
     let voz =
-        voces.find(v => v.lang === "es-CL" && v.name.toLowerCase().includes("female")) ||
-        voces.find(v => v.lang === "es-MX") ||
+        voces.find(v => v.lang === "es-CL") ||
         voces.find(v => v.lang.startsWith("es"));
 
     if(voz) m.voice = voz;
@@ -181,7 +175,7 @@ function iniciarEjercicio(){
 
     document.getElementById("botonera").innerHTML = `<div class="reloj">⏳</div>`;
 
-    setTimeout(ocultarTodo,4000);
+    setTimeout(ocultarTodo,3000); /* 🔥 AHORA 3 SEGUNDOS */
 }
 
 /* OCULTAR */
@@ -204,8 +198,6 @@ function mostrarRespuesta(){
     let correcto = document.getElementById("num"+cantidad);
     correcto.classList.add("correcto");
 
-    aciertos++;
-
     hablar("Había " + cantidad);
 
     document.getElementById("botonera").innerHTML = `
@@ -217,15 +209,14 @@ function mostrarRespuesta(){
 function mostrarFinal(){
 
     document.getElementById("pantalla").innerHTML = `
-        <h1>RESULTADOS</h1>
-        <p>Respuestas correctas: ${aciertos} de ${total}</p>
+        <h1>¡Felicitaciones!</h1>
+        <p>¡Buen trabajo pensando sin contar!</p>
         <button class="boton" onclick="reiniciar()">REINICIAR</button>
     `;
 }
 
 function reiniciar(){
     ejercicio = 0;
-    aciertos = 0;
     nuevoEjercicio();
 }
 
