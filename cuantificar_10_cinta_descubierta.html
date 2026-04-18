@@ -36,27 +36,28 @@ body{
 /* FILA */
 .fila-puntos{
     display:grid;
-    grid-template-columns: repeat(10,60px);
+    grid-template-columns: repeat(10,70px);
     justify-content:center;
     margin-top:30px;
-    margin-bottom:18px;
+    margin-bottom:20px;
 }
 
 /* CINTA */
 .cinta{
     display:grid;
-    grid-template-columns: repeat(10,60px);
+    grid-template-columns: repeat(10,70px);
     justify-content:center;
 }
 
+/* CASILLA MÁS GRANDE */
 .casilla{
-    width:60px;
-    height:55px;
+    width:70px;
+    height:65px;
     border:2px solid black;
     display:flex;
     justify-content:center;
     align-items:center;
-    font-size:24px;
+    font-size:26px;
     position:relative;
 }
 
@@ -64,16 +65,16 @@ body{
 .correcto::after{
     content:"";
     position:absolute;
-    width:40px;
-    height:40px;
+    width:48px;
+    height:48px;
     border:3px solid #4CAF50;
     border-radius:50%;
 }
 
-/* PUNTOS */
+/* 🔴 FICHA MÁS GRANDE */
 .punto{
-    width:35px;
-    height:35px;
+    width:50px;
+    height:50px;
     border-radius:50%;
     background:red;
     margin:auto;
@@ -118,19 +119,18 @@ function hablar(texto){
     speechSynthesis.speak(m);
 }
 
-/* 🔥 GENERAR CON PRIORIZACIÓN */
+/* GENERAR */
 function generarCantidad(){
-
     let r = Math.random();
 
     if(r < 0.8){
-        return Math.floor(Math.random()*7)+4; // 4 a 10
+        return Math.floor(Math.random()*7)+4;
     }else{
-        return Math.floor(Math.random()*3)+1; // 1 a 3
+        return Math.floor(Math.random()*3)+1;
     }
 }
 
-/* NUEVO EJERCICIO */
+/* NUEVO */
 function nuevoEjercicio(){
 
     ejercicio++;
