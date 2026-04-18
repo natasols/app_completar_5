@@ -97,7 +97,7 @@ function nuevoEjercicio(){
         <div id="puntos" class="fila-puntos"></div>
         <div id="cinta" class="cinta"></div>
 
-        <button class="boton" onclick="iniciarReloj()">INICIAR EJERCICIO</button>
+        <div id="botonera"></div>
     `;
 
     let puntos = document.getElementById("puntos");
@@ -121,14 +121,16 @@ function nuevoEjercicio(){
 
         cinta.appendChild(cas);
     }
+
+    document.getElementById("botonera").innerHTML = `
+        <button class="boton" onclick="iniciarReloj()">INICIAR EJERCICIO</button>
+    `;
 }
 
 /* RELOJ */
 function iniciarReloj(){
 
-    document.getElementById("pantalla").innerHTML += `
-        <div id="reloj" class="reloj">⏳</div>
-    `;
+    document.getElementById("botonera").innerHTML = `<div class="reloj">⏳</div>`;
 
     setTimeout(ocultarTodo,4000);
 }
@@ -139,15 +141,12 @@ function ocultarTodo(){
     document.getElementById("puntos").classList.add("oculto");
     document.getElementById("cinta").classList.add("oculto");
 
-    let reloj = document.getElementById("reloj");
-    if(reloj) reloj.remove();
-
-    document.getElementById("pantalla").innerHTML += `
+    document.getElementById("botonera").innerHTML = `
         <button class="boton" onclick="mostrarRespuesta()">VERIFICAR</button>
     `;
 }
 
-/* MOSTRAR RESPUESTA */
+/* VERIFICAR */
 function mostrarRespuesta(){
 
     document.getElementById("puntos").classList.remove("oculto");
@@ -155,7 +154,7 @@ function mostrarRespuesta(){
 
     hablar("Había " + cantidad);
 
-    document.getElementById("pantalla").innerHTML += `
+    document.getElementById("botonera").innerHTML = `
         <button class="boton" onclick="nuevoEjercicio()">SIGUIENTE</button>
     `;
 }
