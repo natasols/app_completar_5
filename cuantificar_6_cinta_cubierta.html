@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Calcumat Kinder – Cinta cubierta 6</title>
+
+<style>
+body{
+    font-family: Arial;
+    text-align:center;
+    background:white;
+}
+
+.logo{
+    width:120px;
+    margin-top:20px;
+}
+
+.boton{
+    margin:10px;
+    padding:15px 25px;
+    font-size:18px;
+    background:#4CAF50;
+    color:white;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+}
+
+.contador{
+    margin-top:10px;
+    font-size:16px;
+    color:#555;
+}
+
+/* CINTA */
+.cinta{
+    display:grid;
+    grid-template-columns: repeat(6,80px);
+    justify-content:center;
+    margin-top:50px;
+}
+
+/* CASILLA */
+.casilla{
+    width:80px;
+    height:80px;
+    border:2px solid black;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:28px;
+    position:relative;
+}
+
+/* FICHA */
+.ficha{
+    width:60px;
+    height:60px;
+    background:red;
+    border-radius:50%;
+}
+
+/* FICHA LEVANTADA */
+.ficha-extra{
+    width:60px;
+    height:60px;
+    background:red;
+    border-radius:50%;
+    position:absolute;
+    top:-75px;
+}
+
+/* RELOJ */
+.reloj{
+    font-size:60px;
+    margin-top:20px;
+}
+
+/* OCULTAR */
+.oculto{
+    visibility:hidden;
+}
+</style>
+</head>
+
+<body>
+
+<div id="app"></div>
+
+<script>
+
+let cantidad = 0;
+let ejercicio = 0;
+let total = 20;
+
+/* VOZ */
+function hablar(texto){
+
+    let m = new SpeechSynthesisUtterance(texto);
+
+    let voces = speechSynthesis.getVoices();
+
+    let voz =
+        voces.find(v => v.lang === "es-CL") ||
+        voces.find(v => v.lang.startsWith("es"));
+
+    if(voz) m.voice = voz;
+
+    m.rate = 0.9;
+    m.pitch = 1.2;
+
+    speechSynthesis.speak(m);
+}
+
+/* GENERAR */
+function generarCantidad(){
+    return Math.floor(Math.random()*6)+1;
+}
+
+/* NUEVO EJERCICIO */
+function nuevoEjercicio(){
+
+    ejercicio++;
+
+    if(ejercicio > total){
+        mostrarFinal();
+        return;
+    }
+
+    cantidad = generarCantidad();
+
+    document.getElementById("app").innerHTML = `
+        <img src="logo.png" class="logo">
+        <h2>¿Cuántas hay?</h2>
+        <div class="contador">Ejercicio ${ejercicio} de ${total}</div>
+
+        <div id="cinta"></div>
+
+        <div id="botonera">
+            <button class="boton" onclick="iniciarEjercicio()">INICIAR EJERCICIO</button>
+        </div>
+    `;
+}
+
+/* INICIAR */
+function iniciarEjercicio(){
+
+    let cinta = document.getElementById("cinta");
+    cinta.className = "cinta";
+    cinta.innerHTML = "";
+
+    for(let i=1;i<=6;i++){
+
+        let cas = document.createElement("div");
+        cas.className="casilla";
+
+        if(i <= cantidad){
+            cas.innerHTML = `<div class="ficha"></div>`;
+        }else{
+            cas.innerText = i;
+        }
+
+        cinta.appendChild(cas);
+    }
+
+    document.getElementById("botonera").innerHTML = `<div class="reloj">⏳</div>`;
+
+    setTimeout(ocultarTodo,3000);
+}
+
+/* OCULTAR */
+function ocultarTodo(){
+
+    document.getElementById("cinta").classList.add("oculto");
+
+    document.getElementById("botonera").innerHTML = `
+        <button class="boton" onclick="mostrarRespuesta()">VERIFICAR</button>
+    `;
+}
+
+/* VERIFICAR */
+function mostrarRespuesta(){
+
+    let cinta = document.getElementById("cinta");
+
+    cinta.classList.remove("oculto");
+
+    let casillas = document.querySelectorAll(".casilla");
+
+    let ultima = casillas[cantidad - 1];
+
+    ultima.innerHTML = `
+        ${cantidad}
+        <div class="ficha-extra"></div>
+    `;
+
+    hablar("Había " + cantidad);
+
+    document.getElementById("botonera").innerHTML = `
+        <button class="boton" onclick="nuevoEjercicio()">SIGUIENTE</button>
+    `;
+}
+
+/* FINAL */
+function mostrarFinal(){
+
+    document.getElementById("app").innerHTML = `
+        <h1>¡Felicitaciones!</h1>
+        <p>¡Buen trabajo pensando sin contar!</p>
+        <button class="boton" onclick="reiniciar()">REINICIAR</button>
+    `;
+}
+
+function reiniciar(){
+    ejercicio = 0;
+    nuevoEjercicio();
+}
+
+/* INICIO */
+nuevoEjercicio();
+
+</script>
+
+</body>
+</html>
