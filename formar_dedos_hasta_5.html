@@ -6,7 +6,7 @@
 
 <style>
 body{
-    font-family: Arial;
+    font-family: 'Segoe UI', Arial, sans-serif;
     text-align:center;
     background:white;
 }
@@ -17,7 +17,8 @@ body{
 }
 
 .numero{
-    font-size:120px;
+    font-size:160px;
+    color:#d32f2f;
     margin:30px 0;
     font-weight:bold;
 }
@@ -31,7 +32,11 @@ body{
 }
 
 .mano{
-    width:180px;
+    width:240px;
+}
+
+.izquierda{
+    transform: scaleX(-1);
 }
 
 .boton{
@@ -64,7 +69,7 @@ body{
 
 <script>
 
-/* 🔊 VOZ MEJORADA */
+/* 🔊 VOZ FEMENINA */
 function hablar(texto){
 
     let msg = new SpeechSynthesisUtterance(texto);
@@ -78,7 +83,9 @@ function hablar(texto){
 
         let voz = voces.find(v =>
             v.lang.startsWith("es") &&
-            (v.name.includes("Female") || v.name.includes("Google"))
+            (v.name.toLowerCase().includes("female") ||
+             v.name.toLowerCase().includes("google") ||
+             v.name.toLowerCase().includes("maria"))
         );
 
         if(voz) msg.voice = voz;
@@ -97,6 +104,7 @@ function hablar(texto){
 let ejercicio = 0;
 let total = 12;
 let numero = 0;
+let secuencia = [];
 
 let configuraciones = {
     2: [[2],[1,1]],
@@ -107,6 +115,19 @@ let configuraciones = {
 
 let listaActual = [];
 let paso = 0;
+
+/* GENERAR SECUENCIA SIN REPETICIONES */
+function generarSecuencia(){
+
+    let base = [2,3,4,5, 2,3,4,5, 2,3,4,5];
+
+    for(let i = base.length -1; i>0; i--){
+        let j = Math.floor(Math.random()*(i+1));
+        [base[i], base[j]] = [base[j], base[i]];
+    }
+
+    secuencia = base;
+}
 
 /* PORTADA */
 function mostrarPortada(){
@@ -120,6 +141,7 @@ function mostrarPortada(){
 /* INICIAR */
 function iniciar(){
     ejercicio = 0;
+    generarSecuencia();
     nuevoEjercicio();
 }
 
@@ -133,7 +155,7 @@ function nuevoEjercicio(){
         return;
     }
 
-    numero = Math.floor(Math.random()*4)+2;
+    numero = secuencia[ejercicio-1];
 
     listaActual = configuraciones[numero];
     paso = 0;
@@ -158,7 +180,7 @@ function faseUnaMano(){
     hablar("Forma el " + numero + " con una mano");
 }
 
-/* MOSTRAR FORMA CANÓNICA */
+/* MOSTRAR CANÓNICA */
 function mostrarCanonica(){
 
     let valor = listaActual[0][0];
@@ -198,7 +220,6 @@ function faseDosManos(){
 
 /* MOSTRAR DESCOMPOSICIONES */
 function mostrarDescomposicion(){
-
     paso = 1;
     mostrarPaso();
 }
@@ -213,7 +234,7 @@ function mostrarPaso(){
         htmlManos = `<img src="mano_${config[0]}.png" class="mano">`;
     }else{
         htmlManos = `
-            <img src="mano_${config[0]}.png" class="mano">
+            <img src="mano_${config[0]}.png" class="mano izquierda">
             <img src="mano_${config[1]}.png" class="mano">
         `;
     }
