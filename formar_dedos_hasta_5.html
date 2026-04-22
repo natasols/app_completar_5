@@ -6,9 +6,9 @@
 
 <style>
 body{
-    font-family: 'Segoe UI', 'Arial Rounded MT Bold', sans-serif;
+    font-family: 'Comic Sans MS', 'Trebuchet MS', sans-serif;
     text-align:center;
-    background:#f4f6f8;
+    background:white;
 }
 
 .logo{
@@ -17,7 +17,7 @@ body{
 }
 
 .numero{
-    font-size:140px;
+    font-size:150px;
     color:#d32f2f;
     margin:20px 0;
 }
@@ -30,7 +30,7 @@ body{
 }
 
 .mano{
-    width:200px;
+    width:220px;
 }
 
 .mano.izq{
@@ -49,7 +49,7 @@ body{
 }
 
 .texto{
-    font-size:22px;
+    font-size:24px;
     margin-top:20px;
 }
 </style>
@@ -61,21 +61,27 @@ body{
 
 <script>
 
-/* 🔊 VOZ FEMENINA FORZADA */
+/* 🔊 VOZ FEMENINA REAL */
 function hablar(texto){
     let msg = new SpeechSynthesisUtterance(texto);
-    msg.lang = "es-ES";
+    msg.lang = "es-CL";
     msg.rate = 0.9;
 
     let voces = speechSynthesis.getVoices();
 
-    let voz = voces.find(v =>
-        v.name.toLowerCase().includes("female") ||
-        v.name.toLowerCase().includes("mujer") ||
-        v.name.toLowerCase().includes("google español")
+    // buscar voz femenina en español
+    let voz = voces.find(v => 
+        v.lang.includes("es") && 
+        (v.name.toLowerCase().includes("female") ||
+         v.name.toLowerCase().includes("mujer") ||
+         v.name.toLowerCase().includes("google"))
     );
 
-    if(voz) msg.voice = voz;
+    if(voz){
+        msg.voice = voz;
+    } else {
+        msg.lang = "es-ES";
+    }
 
     speechSynthesis.cancel();
     speechSynthesis.speak(msg);
@@ -86,10 +92,9 @@ let numeros = [2,3,4,5];
 let secuencia = [];
 let index = 0;
 let numeroActual = 0;
-let paso = 0;
 let subPaso = 0;
 
-/* 🔀 EVITAR REPETICIÓN */
+/* 🔀 SECUENCIA SIN REPETICIÓN */
 function generarSecuencia(){
     secuencia = [...numeros];
 
@@ -116,9 +121,6 @@ function siguienteNumero(){
     numeroActual = secuencia[index];
     index++;
 
-    paso = 1;
-    subPaso = 0;
-
     pantallaNumero();
 }
 
@@ -127,8 +129,8 @@ function pantallaNumero(){
     document.getElementById("app").innerHTML = `
         <img src="logo.png" class="logo">
         <div class="numero">${numeroActual}</div>
-        <div class="texto">FORMA EL ${numeroActual} CON UNA MANO</div>
-        <button class="boton" onclick="verificar()">VERIFICAR</button>
+        <div class="texto">Forma el ${numeroActual} con una mano</div>
+        <button class="boton" onclick="verificar()">Verificar</button>
     `;
 
     hablar("Forma el " + numeroActual + " con una mano");
@@ -136,7 +138,6 @@ function pantallaNumero(){
 
 /* ✔ VERIFICAR */
 function verificar(){
-    paso = 2;
     subPaso = 0;
     mostrarFormasUnaMano();
 }
@@ -147,18 +148,10 @@ function mostrarFormasUnaMano(){
     let formas = [];
 
     if(numeroActual == 2){
-        formas = [
-            "mano_2.png",
-            "mano_2_alt1.png",
-            "mano_2_alt2.png"
-        ];
+        formas = ["mano_2.png","mano_2_alt1.png","mano_2_alt2.png"];
     }
     else if(numeroActual == 3){
-        formas = [
-            "mano_3.png",
-            "mano_3_alt1.png",
-            "mano_3_alt2.png"
-        ];
+        formas = ["mano_3.png","mano_3_alt1.png","mano_3_alt2.png"];
     }
     else{
         formas = ["mano_" + numeroActual + ".png"];
@@ -176,8 +169,8 @@ function mostrarFormasUnaMano(){
         <div class="manos">
             <img src="${formas[subPaso]}" class="mano">
         </div>
-        <button class="boton" onclick="siguienteFormaUnaMano(${formas.length})">
-            ${subPaso < formas.length-1 ? "OTRA FORMA" : "SIGUIENTE"}
+        <button class="boton" onclick="siguienteForma(${formas.length})">
+            ${subPaso < formas.length-1 ? "Otra forma" : "Siguiente"}
         </button>
     `;
 
@@ -185,13 +178,12 @@ function mostrarFormasUnaMano(){
 }
 
 /* ➡ SIGUIENTE FORMA */
-function siguienteFormaUnaMano(total){
+function siguienteForma(total){
     subPaso++;
 
     if(subPaso < total){
         mostrarFormasUnaMano();
     }else{
-        paso = 3;
         pantallaDosManos();
     }
 }
@@ -202,15 +194,15 @@ function pantallaDosManos(){
     document.getElementById("app").innerHTML = `
         <img src="logo.png" class="logo">
         <div class="numero">${numeroActual}</div>
-        <div class="texto">AHORA FORMA EL ${numeroActual} CON DOS MANOS</div>
-        <button class="boton" onclick="mostrarRespuestaDosManos()">VERIFICAR</button>
+        <div class="texto">Ahora forma el ${numeroActual} con dos manos</div>
+        <button class="boton" onclick="mostrarRespuesta()">Verificar</button>
     `;
 
     hablar("Ahora forma el " + numeroActual + " con dos manos");
 }
 
-/* 🧠 RESPUESTA DOS MANOS */
-function mostrarRespuestaDosManos(){
+/* 🧠 RESPUESTA */
+function mostrarRespuesta(){
 
     let izq = 1;
     let der = numeroActual - 1;
@@ -222,7 +214,7 @@ function mostrarRespuestaDosManos(){
             <img src="mano_${izq}.png" class="mano izq">
             <img src="mano_${der}.png" class="mano">
         </div>
-        <button class="boton" onclick="siguienteNumero()">SIGUIENTE</button>
+        <button class="boton" onclick="siguienteNumero()">Siguiente</button>
     `;
 
     hablar("También se puede hacer así");
