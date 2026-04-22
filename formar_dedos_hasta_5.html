@@ -52,8 +52,9 @@ body{
 
 .mensaje{
     margin-top:20px;
-    font-size:22px;
-    font-weight:bold;
+    font-size:26px;
+    font-weight:500;
+    letter-spacing:0.5px;
 }
 
 .contador{
@@ -69,35 +70,32 @@ body{
 
 <script>
 
-/* 🔊 VOZ FEMENINA */
+/* 🔊 VOZ MEJORADA */
 function hablar(texto){
+
+    speechSynthesis.cancel();
 
     let msg = new SpeechSynthesisUtterance(texto);
 
     msg.lang = "es-ES";
-    msg.rate = 0.85;
-    msg.pitch = 1.2;
+    msg.rate = 0.9;
+    msg.pitch = 1.3;
 
-    function setVoice(){
-        let voces = speechSynthesis.getVoices();
+    let voces = speechSynthesis.getVoices();
 
-        let voz = voces.find(v =>
-            v.lang.startsWith("es") &&
-            (v.name.toLowerCase().includes("female") ||
-             v.name.toLowerCase().includes("google") ||
-             v.name.toLowerCase().includes("maria"))
-        );
+    let voz =
+        voces.find(v => v.name.includes("Google español")) ||
+        voces.find(v => v.name.includes("Paulina")) ||
+        voces.find(v => v.name.includes("Helena")) ||
+        voces.find(v => v.name.includes("Laura")) ||
+        voces.find(v => v.name.includes("Maria")) ||
+        voces.find(v => v.lang.startsWith("es"));
 
-        if(voz) msg.voice = voz;
-
-        speechSynthesis.speak(msg);
+    if(voz){
+        msg.voice = voz;
     }
 
-    if(speechSynthesis.getVoices().length === 0){
-        speechSynthesis.onvoiceschanged = setVoice;
-    }else{
-        setVoice();
-    }
+    speechSynthesis.speak(msg);
 }
 
 /* VARIABLES */
@@ -116,7 +114,7 @@ let configuraciones = {
 let listaActual = [];
 let paso = 0;
 
-/* GENERAR SECUENCIA SIN REPETICIONES */
+/* GENERAR SECUENCIA BALANCEADA */
 function generarSecuencia(){
 
     let base = [2,3,4,5, 2,3,4,5, 2,3,4,5];
@@ -134,7 +132,7 @@ function mostrarPortada(){
     document.getElementById("app").innerHTML = `
         <img src="logo.png" class="logo">
         <h2>Formar cantidades con los dedos</h2>
-        <button class="boton" onclick="iniciar()">INICIAR</button>
+        <button class="boton" onclick="iniciar()">Iniciar</button>
     `;
 }
 
@@ -156,7 +154,6 @@ function nuevoEjercicio(){
     }
 
     numero = secuencia[ejercicio-1];
-
     listaActual = configuraciones[numero];
     paso = 0;
 
@@ -172,15 +169,15 @@ function faseUnaMano(){
 
         <div class="numero">${numero}</div>
 
-        <div class="mensaje">FORMA EL ${numero} CON UNA MANO</div>
+        <div class="mensaje">Forma el ${numero} con una mano</div>
 
-        <button class="boton" onclick="mostrarCanonica()">SIGUIENTE</button>
+        <button class="boton" onclick="mostrarCanonica()">Siguiente</button>
     `;
 
     hablar("Forma el " + numero + " con una mano");
 }
 
-/* MOSTRAR CANÓNICA */
+/* RESPUESTA CANÓNICA */
 function mostrarCanonica(){
 
     let valor = listaActual[0][0];
@@ -195,7 +192,7 @@ function mostrarCanonica(){
 
         <div class="mensaje">¿Lo hiciste así?</div>
 
-        <button class="boton" onclick="faseDosManos()">SIGUIENTE</button>
+        <button class="boton" onclick="faseDosManos()">Siguiente</button>
     `;
 
     hablar("¿Lo hiciste así?");
@@ -210,9 +207,9 @@ function faseDosManos(){
 
         <div class="numero">${numero}</div>
 
-        <div class="mensaje">AHORA FORMA EL ${numero} CON DOS MANOS</div>
+        <div class="mensaje">Ahora forma el ${numero} con dos manos</div>
 
-        <button class="boton" onclick="mostrarDescomposicion()">VERIFICAR</button>
+        <button class="boton" onclick="mostrarDescomposicion()">Verificar</button>
     `;
 
     hablar("Ahora forma el " + numero + " con dos manos");
@@ -242,9 +239,9 @@ function mostrarPaso(){
     let boton = "";
 
     if(paso < listaActual.length - 1){
-        boton = `<button class="boton" onclick="siguientePaso()">OTRA FORMA</button>`;
+        boton = `<button class="boton" onclick="siguientePaso()">Otra forma</button>`;
     }else{
-        boton = `<button class="boton" onclick="nuevoEjercicio()">SIGUIENTE</button>`;
+        boton = `<button class="boton" onclick="nuevoEjercicio()">Siguiente</button>`;
     }
 
     document.getElementById("app").innerHTML = `
@@ -273,7 +270,7 @@ function mostrarFinal(){
     document.getElementById("app").innerHTML = `
         <h1>¡Felicitaciones!</h1>
         <p>Terminaste la actividad</p>
-        <button class="boton" onclick="mostrarPortada()">REINICIAR</button>
+        <button class="boton" onclick="mostrarPortada()">Reiniciar</button>
     `;
 
     hablar("Felicitaciones. Terminaste la actividad");
