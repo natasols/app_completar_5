@@ -6,9 +6,9 @@
 
 <style>
 body{
-    font-family: 'Segoe UI', Arial, sans-serif;
+    font-family: 'Segoe UI', 'Arial Rounded MT Bold', sans-serif;
     text-align:center;
-    background:white;
+    background:#f4f6f8;
 }
 
 .logo{
@@ -17,49 +17,40 @@ body{
 }
 
 .numero{
-    font-size:160px;
+    font-size:140px;
     color:#d32f2f;
-    margin:30px 0;
-    font-weight:bold;
+    margin:20px 0;
 }
 
-.contenedor-manos{
+.manos{
     display:flex;
     justify-content:center;
-    align-items:center;
     gap:60px;
-    margin-top:40px;
+    margin:30px;
 }
 
 .mano{
-    width:240px;
+    width:200px;
 }
 
-.izquierda{
+.mano.izq{
     transform: scaleX(-1);
 }
 
 .boton{
-    margin:12px;
-    padding:14px 24px;
-    font-size:16px;
+    padding:14px 22px;
+    font-size:18px;
     background:#4CAF50;
     color:white;
     border:none;
-    border-radius:10px;
+    border-radius:12px;
     cursor:pointer;
-}
-
-.mensaje{
     margin-top:20px;
-    font-size:26px;
-    font-weight:500;
-    letter-spacing:0.5px;
 }
 
-.contador{
-    margin-top:10px;
-    color:#555;
+.texto{
+    font-size:22px;
+    margin-top:20px;
 }
 </style>
 </head>
@@ -70,214 +61,175 @@ body{
 
 <script>
 
-/* 🔊 VOZ MEJORADA */
+/* 🔊 VOZ FEMENINA FORZADA */
 function hablar(texto){
-
-    speechSynthesis.cancel();
-
     let msg = new SpeechSynthesisUtterance(texto);
-
     msg.lang = "es-ES";
     msg.rate = 0.9;
-    msg.pitch = 1.3;
 
     let voces = speechSynthesis.getVoices();
 
-    let voz =
-        voces.find(v => v.name.includes("Google español")) ||
-        voces.find(v => v.name.includes("Paulina")) ||
-        voces.find(v => v.name.includes("Helena")) ||
-        voces.find(v => v.name.includes("Laura")) ||
-        voces.find(v => v.name.includes("Maria")) ||
-        voces.find(v => v.lang.startsWith("es"));
+    let voz = voces.find(v =>
+        v.name.toLowerCase().includes("female") ||
+        v.name.toLowerCase().includes("mujer") ||
+        v.name.toLowerCase().includes("google español")
+    );
 
-    if(voz){
-        msg.voice = voz;
-    }
+    if(voz) msg.voice = voz;
 
+    speechSynthesis.cancel();
     speechSynthesis.speak(msg);
 }
 
-/* VARIABLES */
-let ejercicio = 0;
-let total = 12;
-let numero = 0;
+/* 🔁 VARIABLES */
+let numeros = [2,3,4,5];
 let secuencia = [];
-
-let configuraciones = {
-    2: [[2],[1,1]],
-    3: [[3],[2,1]],
-    4: [[4],[3,1],[2,2]],
-    5: [[5],[4,1],[3,2]]
-};
-
-let listaActual = [];
+let index = 0;
+let numeroActual = 0;
 let paso = 0;
+let subPaso = 0;
 
-/* GENERAR SECUENCIA BALANCEADA */
+/* 🔀 EVITAR REPETICIÓN */
 function generarSecuencia(){
+    secuencia = [...numeros];
 
-    let base = [2,3,4,5, 2,3,4,5, 2,3,4,5];
-
-    for(let i = base.length -1; i>0; i--){
+    for(let i=secuencia.length-1;i>0;i--){
         let j = Math.floor(Math.random()*(i+1));
-        [base[i], base[j]] = [base[j], base[i]];
+        [secuencia[i],secuencia[j]] = [secuencia[j],secuencia[i]];
     }
-
-    secuencia = base;
 }
 
-/* PORTADA */
-function mostrarPortada(){
-    document.getElementById("app").innerHTML = `
-        <img src="logo.png" class="logo">
-        <h2>Formar cantidades con los dedos</h2>
-        <button class="boton" onclick="iniciar()">Iniciar</button>
-    `;
-}
-
-/* INICIAR */
+/* 🚀 INICIO */
 function iniciar(){
-    ejercicio = 0;
     generarSecuencia();
-    nuevoEjercicio();
+    index = 0;
+    siguienteNumero();
 }
 
-/* NUEVO EJERCICIO */
-function nuevoEjercicio(){
-
-    ejercicio++;
-
-    if(ejercicio > total){
-        mostrarFinal();
-        return;
+/* 🔢 NUEVO NÚMERO */
+function siguienteNumero(){
+    if(index >= secuencia.length){
+        generarSecuencia();
+        index = 0;
     }
 
-    numero = secuencia[ejercicio-1];
-    listaActual = configuraciones[numero];
-    paso = 0;
+    numeroActual = secuencia[index];
+    index++;
 
-    faseUnaMano();
-}
-
-/* FASE 1 */
-function faseUnaMano(){
-
-    document.getElementById("app").innerHTML = `
-        <img src="logo.png" class="logo">
-        <div class="contador">Ejercicio ${ejercicio} de ${total}</div>
-
-        <div class="numero">${numero}</div>
-
-        <div class="mensaje">Forma el ${numero} con una mano</div>
-
-        <button class="boton" onclick="mostrarCanonica()">Siguiente</button>
-    `;
-
-    hablar("Forma el " + numero + " con una mano");
-}
-
-/* RESPUESTA CANÓNICA */
-function mostrarCanonica(){
-
-    let valor = listaActual[0][0];
-
-    document.getElementById("app").innerHTML = `
-        <img src="logo.png" class="logo">
-        <div class="contador">Ejercicio ${ejercicio} de ${total}</div>
-
-        <div class="contenedor-manos">
-            <img src="mano_${valor}.png" class="mano">
-        </div>
-
-        <div class="mensaje">¿Lo hiciste así?</div>
-
-        <button class="boton" onclick="faseDosManos()">Siguiente</button>
-    `;
-
-    hablar("¿Lo hiciste así?");
-}
-
-/* FASE 2 */
-function faseDosManos(){
-
-    document.getElementById("app").innerHTML = `
-        <img src="logo.png" class="logo">
-        <div class="contador">Ejercicio ${ejercicio} de ${total}</div>
-
-        <div class="numero">${numero}</div>
-
-        <div class="mensaje">Ahora forma el ${numero} con dos manos</div>
-
-        <button class="boton" onclick="mostrarDescomposicion()">Verificar</button>
-    `;
-
-    hablar("Ahora forma el " + numero + " con dos manos");
-}
-
-/* MOSTRAR DESCOMPOSICIONES */
-function mostrarDescomposicion(){
     paso = 1;
-    mostrarPaso();
+    subPaso = 0;
+
+    pantallaNumero();
 }
 
-function mostrarPaso(){
+/* 🧩 PANTALLA 1 */
+function pantallaNumero(){
+    document.getElementById("app").innerHTML = `
+        <img src="logo.png" class="logo">
+        <div class="numero">${numeroActual}</div>
+        <div class="texto">FORMA EL ${numeroActual} CON UNA MANO</div>
+        <button class="boton" onclick="verificar()">VERIFICAR</button>
+    `;
 
-    let config = listaActual[paso];
+    hablar("Forma el " + numeroActual + " con una mano");
+}
 
-    let htmlManos = "";
+/* ✔ VERIFICAR */
+function verificar(){
+    paso = 2;
+    subPaso = 0;
+    mostrarFormasUnaMano();
+}
 
-    if(config.length === 1){
-        htmlManos = `<img src="mano_${config[0]}.png" class="mano">`;
-    }else{
-        htmlManos = `
-            <img src="mano_${config[0]}.png" class="mano izquierda">
-            <img src="mano_${config[1]}.png" class="mano">
-        `;
+/* 🖐 FORMAS UNA MANO */
+function mostrarFormasUnaMano(){
+
+    let formas = [];
+
+    if(numeroActual == 2){
+        formas = [
+            "mano_2.png",
+            "mano_2_alt1.png",
+            "mano_2_alt2.png"
+        ];
+    }
+    else if(numeroActual == 3){
+        formas = [
+            "mano_3.png",
+            "mano_3_alt1.png",
+            "mano_3_alt2.png"
+        ];
+    }
+    else{
+        formas = ["mano_" + numeroActual + ".png"];
     }
 
-    let boton = "";
-
-    if(paso < listaActual.length - 1){
-        boton = `<button class="boton" onclick="siguientePaso()">Otra forma</button>`;
-    }else{
-        boton = `<button class="boton" onclick="nuevoEjercicio()">Siguiente</button>`;
-    }
+    let textos = [
+        "Una forma es esta",
+        "También puedes hacerlo así",
+        "Otra forma es esta"
+    ];
 
     document.getElementById("app").innerHTML = `
         <img src="logo.png" class="logo">
-        <div class="contador">Ejercicio ${ejercicio} de ${total}</div>
-
-        <div class="contenedor-manos">
-            ${htmlManos}
+        <div class="texto">${textos[subPaso]}</div>
+        <div class="manos">
+            <img src="${formas[subPaso]}" class="mano">
         </div>
+        <button class="boton" onclick="siguienteFormaUnaMano(${formas.length})">
+            ${subPaso < formas.length-1 ? "OTRA FORMA" : "SIGUIENTE"}
+        </button>
+    `;
 
-        <div class="mensaje">¿Lo hiciste así?</div>
+    hablar(textos[subPaso]);
+}
 
-        ${boton}
+/* ➡ SIGUIENTE FORMA */
+function siguienteFormaUnaMano(total){
+    subPaso++;
+
+    if(subPaso < total){
+        mostrarFormasUnaMano();
+    }else{
+        paso = 3;
+        pantallaDosManos();
+    }
+}
+
+/* ✌ DOS MANOS */
+function pantallaDosManos(){
+
+    document.getElementById("app").innerHTML = `
+        <img src="logo.png" class="logo">
+        <div class="numero">${numeroActual}</div>
+        <div class="texto">AHORA FORMA EL ${numeroActual} CON DOS MANOS</div>
+        <button class="boton" onclick="mostrarRespuestaDosManos()">VERIFICAR</button>
+    `;
+
+    hablar("Ahora forma el " + numeroActual + " con dos manos");
+}
+
+/* 🧠 RESPUESTA DOS MANOS */
+function mostrarRespuestaDosManos(){
+
+    let izq = 1;
+    let der = numeroActual - 1;
+
+    document.getElementById("app").innerHTML = `
+        <img src="logo.png" class="logo">
+        <div class="texto">Una forma es esta</div>
+        <div class="manos">
+            <img src="mano_${izq}.png" class="mano izq">
+            <img src="mano_${der}.png" class="mano">
+        </div>
+        <button class="boton" onclick="siguienteNumero()">SIGUIENTE</button>
     `;
 
     hablar("También se puede hacer así");
 }
 
-function siguientePaso(){
-    paso++;
-    mostrarPaso();
-}
-
-/* FINAL */
-function mostrarFinal(){
-    document.getElementById("app").innerHTML = `
-        <h1>¡Felicitaciones!</h1>
-        <p>Terminaste la actividad</p>
-        <button class="boton" onclick="mostrarPortada()">Reiniciar</button>
-    `;
-
-    hablar("Felicitaciones. Terminaste la actividad");
-}
-
-/* INICIO */
-mostrarPortada();
+/* 🚀 START */
+iniciar();
 
 </script>
 
