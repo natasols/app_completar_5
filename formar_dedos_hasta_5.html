@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Calcumat Kinder – Formar cantidad con dedos</title>
+<title>Calcumat Kinder – Formar dedos hasta 5</title>
 
 <style>
 body{
@@ -14,6 +14,12 @@ body{
 .logo{
     width:120px;
     margin-top:20px;
+}
+
+.numero{
+    font-size:120px;
+    margin:30px 0;
+    font-weight:bold;
 }
 
 .contenedor-manos{
@@ -29,8 +35,8 @@ body{
 }
 
 .boton{
-    margin:10px;
-    padding:12px 22px;
+    margin:12px;
+    padding:14px 24px;
     font-size:16px;
     background:#4CAF50;
     color:white;
@@ -41,7 +47,7 @@ body{
 
 .mensaje{
     margin-top:20px;
-    font-size:20px;
+    font-size:22px;
     font-weight:bold;
 }
 
@@ -58,42 +64,55 @@ body{
 
 <script>
 
-/* 🔊 VOZ */
+/* 🔊 VOZ MEJORADA */
 function hablar(texto){
+
     let msg = new SpeechSynthesisUtterance(texto);
+
     msg.lang = "es-ES";
     msg.rate = 0.85;
     msg.pitch = 1.2;
 
-    let voces = speechSynthesis.getVoices();
-    let voz = voces.find(v => v.lang.startsWith("es"));
-    if(voz) msg.voice = voz;
+    function setVoice(){
+        let voces = speechSynthesis.getVoices();
 
-    speechSynthesis.speak(msg);
+        let voz = voces.find(v =>
+            v.lang.startsWith("es") &&
+            (v.name.includes("Female") || v.name.includes("Google"))
+        );
+
+        if(voz) msg.voice = voz;
+
+        speechSynthesis.speak(msg);
+    }
+
+    if(speechSynthesis.getVoices().length === 0){
+        speechSynthesis.onvoiceschanged = setVoice;
+    }else{
+        setVoice();
+    }
 }
 
 /* VARIABLES */
 let ejercicio = 0;
-let total = 12; // menos ejercicios porque son más profundos
+let total = 12;
 let numero = 0;
 
-let configActual;
-let configAlternativa;
-
-/* CONFIGURACIONES VÁLIDAS */
-const configuraciones = {
-    2: [[1,1]],
-    3: [[2,1]],
-    4: [[3,1],[2,2]],
-    5: [[4,1],[3,2]]
+let configuraciones = {
+    2: [[2],[1,1]],
+    3: [[3],[2,1]],
+    4: [[4],[3,1],[2,2]],
+    5: [[5],[4,1],[3,2]]
 };
+
+let listaActual = [];
+let paso = 0;
 
 /* PORTADA */
 function mostrarPortada(){
     document.getElementById("app").innerHTML = `
         <img src="logo.png" class="logo">
-        <h2>Nivel: Kinder</h2>
-        <p>Formar cantidades con los dedos (hasta 5)</p>
+        <h2>Formar cantidades con los dedos</h2>
         <button class="boton" onclick="iniciar()">INICIAR</button>
     `;
 }
@@ -114,90 +133,125 @@ function nuevoEjercicio(){
         return;
     }
 
-    // elegir número desde 2 a 5
     numero = Math.floor(Math.random()*4)+2;
 
-    let posibles = configuraciones[numero];
+    listaActual = configuraciones[numero];
+    paso = 0;
 
-    // elegir config inicial
-    configActual = posibles[Math.floor(Math.random()*posibles.length)];
+    faseUnaMano();
+}
 
-    // elegir alternativa distinta
-    if(posibles.length > 1){
-        do{
-            configAlternativa = posibles[Math.floor(Math.random()*posibles.length)];
-        }while(configAlternativa[0] === configActual[0]);
+/* FASE 1 */
+function faseUnaMano(){
+
+    document.getElementById("app").innerHTML = `
+        <img src="logo.png" class="logo">
+        <div class="contador">Ejercicio ${ejercicio} de ${total}</div>
+
+        <div class="numero">${numero}</div>
+
+        <div class="mensaje">FORMA EL ${numero} CON UNA MANO</div>
+
+        <button class="boton" onclick="mostrarCanonica()">SIGUIENTE</button>
+    `;
+
+    hablar("Forma el " + numero + " con una mano");
+}
+
+/* MOSTRAR FORMA CANÓNICA */
+function mostrarCanonica(){
+
+    let valor = listaActual[0][0];
+
+    document.getElementById("app").innerHTML = `
+        <img src="logo.png" class="logo">
+        <div class="contador">Ejercicio ${ejercicio} de ${total}</div>
+
+        <div class="contenedor-manos">
+            <img src="mano_${valor}.png" class="mano">
+        </div>
+
+        <div class="mensaje">¿Lo hiciste así?</div>
+
+        <button class="boton" onclick="faseDosManos()">SIGUIENTE</button>
+    `;
+
+    hablar("¿Lo hiciste así?");
+}
+
+/* FASE 2 */
+function faseDosManos(){
+
+    document.getElementById("app").innerHTML = `
+        <img src="logo.png" class="logo">
+        <div class="contador">Ejercicio ${ejercicio} de ${total}</div>
+
+        <div class="numero">${numero}</div>
+
+        <div class="mensaje">AHORA FORMA EL ${numero} CON DOS MANOS</div>
+
+        <button class="boton" onclick="mostrarDescomposicion()">VERIFICAR</button>
+    `;
+
+    hablar("Ahora forma el " + numero + " con dos manos");
+}
+
+/* MOSTRAR DESCOMPOSICIONES */
+function mostrarDescomposicion(){
+
+    paso = 1;
+    mostrarPaso();
+}
+
+function mostrarPaso(){
+
+    let config = listaActual[paso];
+
+    let htmlManos = "";
+
+    if(config.length === 1){
+        htmlManos = `<img src="mano_${config[0]}.png" class="mano">`;
     }else{
-        configAlternativa = configActual;
+        htmlManos = `
+            <img src="mano_${config[0]}.png" class="mano">
+            <img src="mano_${config[1]}.png" class="mano">
+        `;
     }
 
-    mostrarFaseCopia();
-}
+    let boton = "";
 
-/* FASE 1: COPIAR */
-function mostrarFaseCopia(){
-
-    document.getElementById("app").innerHTML = `
-        <img src="logo.png" class="logo">
-        <h2>Muestra esta cantidad</h2>
-        <div class="contador">Ejercicio ${ejercicio} de ${total}</div>
-
-        <div class="contenedor-manos">
-            <img src="mano_${configActual[0]}.png" class="mano">
-            <img src="mano_${configActual[1]}.png" class="mano">
-        </div>
-
-        <p class="mensaje">Muéstralo con tus manos</p>
-
-        <button class="boton" onclick="faseDistinto()">SIGUIENTE</button>
-    `;
-
-    hablar("Muéstralo con tus manos");
-}
-
-/* FASE 2: DISTINTO */
-function faseDistinto(){
+    if(paso < listaActual.length - 1){
+        boton = `<button class="boton" onclick="siguientePaso()">OTRA FORMA</button>`;
+    }else{
+        boton = `<button class="boton" onclick="nuevoEjercicio()">SIGUIENTE</button>`;
+    }
 
     document.getElementById("app").innerHTML = `
         <img src="logo.png" class="logo">
-        <h2>¿Puedes hacerlo de otra forma?</h2>
         <div class="contador">Ejercicio ${ejercicio} de ${total}</div>
 
         <div class="contenedor-manos">
-            <img src="mano_${configActual[0]}.png" class="mano">
-            <img src="mano_${configActual[1]}.png" class="mano">
+            ${htmlManos}
         </div>
 
-        <button class="boton" onclick="verificar()">VERIFICAR</button>
-    `;
+        <div class="mensaje">¿Lo hiciste así?</div>
 
-    hablar("¿Puedes hacerlo de otra forma?");
-}
-
-/* VERIFICAR */
-function verificar(){
-
-    document.getElementById("app").innerHTML = `
-        <img src="logo.png" class="logo">
-        <h2>También se puede hacer así</h2>
-        <div class="contador">Ejercicio ${ejercicio} de ${total}</div>
-
-        <div class="contenedor-manos">
-            <img src="mano_${configAlternativa[0]}.png" class="mano">
-            <img src="mano_${configAlternativa[1]}.png" class="mano">
-        </div>
-
-        <button class="boton" onclick="nuevoEjercicio()">SIGUIENTE</button>
+        ${boton}
     `;
 
     hablar("También se puede hacer así");
+}
+
+function siguientePaso(){
+    paso++;
+    mostrarPaso();
 }
 
 /* FINAL */
 function mostrarFinal(){
     document.getElementById("app").innerHTML = `
         <h1>¡Felicitaciones!</h1>
-        <p>Has terminado los ejercicios</p>
+        <p>Terminaste la actividad</p>
         <button class="boton" onclick="mostrarPortada()">REINICIAR</button>
     `;
 
