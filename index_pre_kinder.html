@@ -5,54 +5,174 @@
 <title>Calcumat – Pre-Kínder</title>
 
 <style>
+
 body{
     font-family:'Comic Sans MS','Trebuchet MS',sans-serif;
     margin:0;
     background:white;
+    color:#263238;
 }
 
 .wrapper{
+    min-height:100vh;
     display:flex;
     flex-direction:column;
     align-items:center;
-    padding:20px;
+    padding:28px 20px 40px 20px;
 }
 
+/* HEADER */
 .logo{
-    width:300px;
-    margin:20px 0;
+    width:360px;
+    margin-top:10px;
+    margin-bottom:22px;
 }
 
 .titulo{
-    font-size:28px;
-    margin-bottom:30px;
-}
-
-.grid{
-    display:grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px,1fr));
-    gap:20px;
-    width:100%;
-    max-width:900px;
-}
-
-.tarjeta{
-    background:#f9f9f9;
-    border-radius:18px;
-    padding:20px;
+    font-family:'Trebuchet MS',sans-serif;
+    font-size:34px;
+    font-weight:bold;
     text-align:center;
+    margin-bottom:6px;
+    line-height:1.2;
+    color:#0b2e63;
+}
+
+.bajada{
+    font-family:'Trebuchet MS',sans-serif;
+    font-size:28px;
+    font-weight:bold;
+    text-align:center;
+    margin-bottom:12px;
+    color:#4a4a4a;
+}
+
+.indicacion{
+    font-size:18px;
+    text-align:center;
+    color:#777;
+    margin-bottom:34px;
+}
+
+/* RUTA */
+.ruta{
+    width:100%;
+    max-width:980px;
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+}
+
+/* TARJETA */
+.tarjeta{
+    display:flex;
+    align-items:center;
+    gap:18px;
+    background:#f9f9f9;
+    border-radius:24px;
+    padding:20px 24px;
     cursor:pointer;
     box-shadow:0 4px 10px rgba(0,0,0,0.08);
     transition:0.2s;
+    border:3px solid transparent;
 }
 
 .tarjeta:hover{
-    transform:scale(1.05);
+    transform:scale(1.02);
+    box-shadow:0 6px 14px rgba(0,0,0,0.12);
+}
+
+/* NUMERO */
+.numero{
+    min-width:58px;
+    height:58px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:28px;
+    color:white;
+    font-weight:bold;
+}
+
+/* TEXTOS */
+.contenido{
+    flex:1;
+    text-align:left;
 }
 
 .nombre{
-    font-size:18px;
+    font-size:24px;
+    line-height:1.25;
 }
+
+.descripcion{
+    font-size:17px;
+    color:#666;
+    margin-top:5px;
+}
+
+/* FLECHA */
+.entrar{
+    font-size:32px;
+    color:#b0b0b0;
+}
+
+/* COLORES */
+.azul .numero{ background:#42a5f5; }
+.azul:hover{ border-color:#90caf9; }
+
+.verde .numero{ background:#66bb6a; }
+.verde:hover{ border-color:#a5d6a7; }
+
+.amarillo .numero{ background:#fbc02d; }
+.amarillo:hover{ border-color:#ffe082; }
+
+.naranja .numero{ background:#fb8c00; }
+.naranja:hover{ border-color:#ffcc80; }
+
+.rojo .numero{ background:#ef5350; }
+.rojo:hover{ border-color:#ef9a9a; }
+
+/* RESPONSIVE */
+@media (max-width:700px){
+
+    .logo{
+        width:280px;
+    }
+
+    .titulo{
+        font-size:28px;
+    }
+
+    .bajada{
+        font-size:24px;
+    }
+
+    .tarjeta{
+        padding:18px;
+        gap:14px;
+    }
+
+    .numero{
+        min-width:50px;
+        height:50px;
+        font-size:24px;
+    }
+
+    .nombre{
+        font-size:20px;
+    }
+
+    .descripcion{
+        font-size:15px;
+    }
+
+    .entrar{
+        font-size:26px;
+    }
+}
+
 </style>
 </head>
 
@@ -62,40 +182,130 @@ body{
 
     <img src="logo.png" class="logo">
 
-    <div class="titulo">Pre-Kínder · Rutinas matemáticas</div>
+    <div class="titulo">
+        Rutinas para Construir el Sentido Numérico
+    </div>
 
-    <div class="grid">
+    <div class="bajada">
+        Pre-Kínder
+    </div>
 
-        <div class="tarjeta" onclick="ir('identificar_numeros_animales_6.html')">
-            <div class="nombre">¿Qué número ves?</div>
+    <div class="indicacion">
+        Se recomienda seguir el orden propuesto.
+    </div>
+
+    <div class="ruta">
+
+        <!-- APP 1 -->
+        <div class="tarjeta azul" onclick="ir('identificar_numeros_animales_6.html')">
+            <div class="numero">1</div>
+            <div class="contenido">
+                <div class="nombre">
+                    ¿Qué número ves?
+                </div>
+                <div class="descripcion">
+                    Identificar números hasta 6.
+                </div>
+            </div>
+            <div class="entrar">›</div>
         </div>
 
-        <div class="tarjeta" onclick="ir('completar_cinta_numerada_6.html')">
-            <div class="nombre">Completar cinta · Parte 1</div>
+        <!-- APP 2 -->
+        <div class="tarjeta verde" onclick="ir('completar_cinta_numerada_6.html')">
+            <div class="numero">2</div>
+            <div class="contenido">
+                <div class="nombre">
+                    ¿Completemos la cinta numerada? · Parte 1
+                </div>
+                <div class="descripcion">
+                    Completar secuencia numérica hasta 6.
+                </div>
+            </div>
+            <div class="entrar">›</div>
         </div>
 
-        <div class="tarjeta" onclick="ir('completar_cinta_numerada_6_parte2.html')">
-            <div class="nombre">Completar cinta · Parte 2</div>
+        <!-- APP 3 -->
+        <div class="tarjeta verde" onclick="ir('completar_cinta_numerada_6_parte2.html')">
+            <div class="numero">3</div>
+            <div class="contenido">
+                <div class="nombre">
+                    ¿Completemos la cinta numerada? · Parte 2
+                </div>
+                <div class="descripcion">
+                    Completar secuencia numérica hasta 6 con mayor desafío.
+                </div>
+            </div>
+            <div class="entrar">›</div>
         </div>
 
-        <div class="tarjeta" onclick="ir('formar_dedos_hasta_5.html')">
-            <div class="nombre">Formar números con los dedos</div>
+        <!-- APP 4 -->
+        <div class="tarjeta amarillo" onclick="ir('formar_dedos_hasta_5.html')">
+            <div class="numero">4</div>
+            <div class="contenido">
+                <div class="nombre">
+                    Formemos números con los dedos
+                </div>
+                <div class="descripcion">
+                    Representar cantidades hasta 5 usando los dedos.
+                </div>
+            </div>
+            <div class="entrar">›</div>
         </div>
 
-        <div class="tarjeta" onclick="ir('cuantificar_6_dado.html')">
-            <div class="nombre">Cuantificar en el dado</div>
+        <!-- APP 5 -->
+        <div class="tarjeta amarillo" onclick="ir('cuantificar_6_dado.html')">
+            <div class="numero">5</div>
+            <div class="contenido">
+                <div class="nombre">
+                    ¿Cuántos hay en el dado?
+                </div>
+                <div class="descripcion">
+                    Cuantificar configuraciones de dado hasta 6.
+                </div>
+            </div>
+            <div class="entrar">›</div>
         </div>
 
-        <div class="tarjeta" onclick="ir('cuantificar_6_cinta_descubierta.html')">
-            <div class="nombre">Cinta descubierta</div>
+        <!-- APP 6 -->
+        <div class="tarjeta naranja" onclick="ir('cuantificar_6_cinta_descubierta.html')">
+            <div class="numero">6</div>
+            <div class="contenido">
+                <div class="nombre">
+                    ¿Cuántas hay en la cinta? · Parte 1
+                </div>
+                <div class="descripcion">
+                    Cuantificar en la cinta numerada hasta 6.
+                </div>
+            </div>
+            <div class="entrar">›</div>
         </div>
 
-        <div class="tarjeta" onclick="ir('cuantificar_6_cinta_cubierta.html')">
-            <div class="nombre">Cinta cubierta</div>
+        <!-- APP 7 -->
+        <div class="tarjeta naranja" onclick="ir('cuantificar_6_cinta_cubierta.html')">
+            <div class="numero">7</div>
+            <div class="contenido">
+                <div class="nombre">
+                    ¿Cuántas hay en la cinta? · Parte 2
+                </div>
+                <div class="descripcion">
+                    Cuantificar en la cinta numerada cubierta hasta 6.
+                </div>
+            </div>
+            <div class="entrar">›</div>
         </div>
 
-        <div class="tarjeta" onclick="ir('cuantificar_hasta_5_marco_10.html')">
-            <div class="nombre">¿Cuántos hay? (marco)</div>
+        <!-- APP 8 -->
+        <div class="tarjeta rojo" onclick="ir('cuantificar_hasta_5_marco_10.html')">
+            <div class="numero">8</div>
+            <div class="contenido">
+                <div class="nombre">
+                    ¿Cuántas hay? · Marco de 5
+                </div>
+                <div class="descripcion">
+                    Cuantificar de súbito hasta 5.
+                </div>
+            </div>
+            <div class="entrar">›</div>
         </div>
 
     </div>
@@ -103,9 +313,11 @@ body{
 </div>
 
 <script>
+
 function ir(url){
     window.location.href = url;
 }
+
 </script>
 
 </body>
