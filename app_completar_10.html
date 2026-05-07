@@ -2,13 +2,15 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Calcumat – Completar 10</title>
+<title>Calcumat Kinder – ¿Cuántas hay? ¿Cuántas faltan?</title>
 
 <style>
 
 body{
-    font-family: 'Comic Sans MS', 'Trebuchet MS', sans-serif;
+    font-family:'Comic Sans MS','Trebuchet MS',sans-serif;
     margin:0;
+    text-align:center;
+    background:white;
 }
 
 /* CONTENEDOR */
@@ -17,24 +19,87 @@ body{
     display:flex;
     flex-direction:column;
     align-items:center;
+    position:relative;
 }
 
-/* HEADER */
-.header{
-    text-align:center;
-    margin-top:20px;
+/* FLECHAS */
+.flecha-nav{
+    position:absolute;
+    top:18px;
+    display:flex;
+    align-items:center;
+    gap:6px;
+    font-size:16px;
+    color:#9e9e9e;
+    cursor:pointer;
+    user-select:none;
+    transition:0.2s;
 }
 
-.logo-portada{ width:360px; }
-.logo-app{ width:150px; }
+.flecha-nav:hover{
+    color:#616161;
+    transform:scale(1.05);
+}
+
+.flecha-nav span{
+    font-size:22px;
+}
+
+.flecha-indice{
+    left:24px;
+}
+
+.flecha-inicio{
+    right:24px;
+}
+
+/* HEADERS */
+.header-portada{
+    margin-top:55px;
+}
+
+.header-app{
+    margin-top:14px;
+}
+
+.logo-portada{
+    width:360px;
+}
+
+.logo-app{
+    width:150px;
+}
+
+/* TEXTOS */
+h1{
+    font-size:36px;
+    margin:22px 0 8px 0;
+}
+
+h2{
+    font-size:30px;
+    margin:10px 0 6px 0;
+}
+
+.bajada{
+    font-size:24px;
+    margin-top:0;
+}
+
+.contador{
+    font-size:18px;
+    margin-top:4px;
+}
 
 /* MAIN */
 .main{
     flex:1;
+    width:100%;
     display:flex;
     flex-direction:column;
     align-items:center;
     justify-content:center;
+    padding:5px 0;
 }
 
 /* MARCO */
@@ -54,9 +119,13 @@ body{
 }
 
 .casilla:nth-child(5),
-.casilla:nth-child(10){ border-right:none; }
+.casilla:nth-child(10){
+    border-right:none;
+}
 
-.casilla:nth-child(n+6){ border-bottom:none; }
+.casilla:nth-child(n+6){
+    border-bottom:none;
+}
 
 .punto{
     width:80px;
@@ -75,8 +144,13 @@ body{
     margin-top:20px;
 }
 
-.rojo{ color:#e53935; }
-.verde-texto{ color:#4CAF50; }
+.rojo{
+    color:#e53935;
+}
+
+.verde-texto{
+    color:#4CAF50;
+}
 
 .expresion{
     font-size:50px;
@@ -85,12 +159,19 @@ body{
 
 /* FOOTER */
 .footer{
-    padding:20px;
+    width:100%;
+    min-height:90px;
+    padding:5px 0 20px 0;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:15px;
+    flex-wrap:wrap;
 }
 
 .boton{
-    padding:15px 30px;
-    font-size:18px;
+    padding:14px 28px;
+    font-size:20px;
     background:#4CAF50;
     color:white;
     border:none;
@@ -99,11 +180,52 @@ body{
 }
 
 .reloj{
-    font-size:70px;
+    font-size:56px;
 }
 
 .oculto{
     visibility:hidden;
+}
+
+@media (max-height:750px){
+
+    .logo-app{
+        width:120px;
+    }
+
+    h2{
+        font-size:26px;
+        margin:6px 0 4px 0;
+    }
+
+    .contador{
+        font-size:16px;
+    }
+
+    .marco{
+        grid-template-columns: repeat(5,82px);
+        grid-template-rows: repeat(2,82px);
+    }
+
+    .punto{
+        width:65px;
+        height:65px;
+    }
+
+    .numero{
+        font-size:78px;
+        margin-top:12px;
+    }
+
+    .expresion{
+        font-size:38px;
+        margin-top:6px;
+    }
+
+    .footer{
+        min-height:75px;
+        padding-bottom:12px;
+    }
 }
 
 </style>
@@ -115,6 +237,16 @@ body{
 
 <script>
 
+/* NAVEGACIÓN */
+function volverIndice(){
+    window.location.href = "index_kinder.html";
+}
+
+function volverInicio(){
+    mostrarPortada();
+}
+
+/* VOZ */
 function hablar(texto){
     let msg = new SpeechSynthesisUtterance(texto);
     msg.lang = "es-CL";
@@ -132,12 +264,24 @@ let anterior = -1;
 
 /* PORTADA */
 function mostrarPortada(){
+
+    speechSynthesis.cancel();
+
     document.getElementById("app").innerHTML = `
         <div class="wrapper">
-            <div class="header">
+
+            <div class="flecha-nav flecha-indice" onclick="volverIndice()">
+                <span>←</span> Índice
+            </div>
+
+            <div class="header-portada">
                 <img src="logo.png" class="logo-portada">
-                <h2>Completar hasta 10</h2>
-                <p>Marco de 10</p>
+
+                <h1>¿Cuántas hay? ¿Cuántas faltan?</h1>
+
+                <div class="bajada">
+                    Cuantificar de súbito hasta 10 - cuantificar lo que falta para completar 10
+                </div>
             </div>
 
             <div class="main"></div>
@@ -145,6 +289,7 @@ function mostrarPortada(){
             <div class="footer">
                 <button class="boton" onclick="iniciar()">Iniciar</button>
             </div>
+
         </div>
     `;
 }
@@ -173,10 +318,18 @@ function siguienteEjercicio(){
     document.getElementById("app").innerHTML = `
         <div class="wrapper">
 
-            <div class="header">
+            <div class="flecha-nav flecha-indice" onclick="volverIndice()">
+                <span>←</span> Índice
+            </div>
+
+            <div class="flecha-nav flecha-inicio" onclick="volverInicio()">
+                <span>↻</span> Inicio
+            </div>
+
+            <div class="header-app">
                 <img src="logo.png" class="logo-app">
                 <h2 id="pregunta">¿Cuántas hay?</h2>
-                <div>Ejercicio ${ejercicio} de ${total}</div>
+                <div class="contador">Ejercicio ${ejercicio} de ${total}</div>
             </div>
 
             <div class="main">
@@ -226,11 +379,13 @@ function mostrarEjercicio(){
     });
 
     document.getElementById("footer").innerHTML = `<div class="reloj">⏳</div>`;
+
     setTimeout(ocultar,3000);
 }
 
 /* OCULTAR */
 function ocultar(){
+
     document.getElementById("marco").classList.add("oculto");
 
     document.getElementById("footer").innerHTML = `
@@ -269,10 +424,7 @@ function mostrarFaltan(){
         }
     }
 
-    /* QUITAR número rojo */
     document.getElementById("numero").innerText = "";
-
-    /* MOSTRAR número verde */
     document.getElementById("numero").innerText = faltan;
     document.getElementById("numero").className = "numero verde-texto";
 
@@ -292,16 +444,29 @@ function mostrarFaltan(){
 
 /* FINAL */
 function mostrarFinal(){
+
     document.getElementById("app").innerHTML = `
         <div class="wrapper">
-            <div class="header">
-                <img src="logo.png" class="logo-portada">
-                <h2>¡Muy bien!</h2>
+
+            <div class="flecha-nav flecha-indice" onclick="volverIndice()">
+                <span>←</span> Índice
             </div>
+
+            <div class="flecha-nav flecha-inicio" onclick="volverInicio()">
+                <span>↻</span> Inicio
+            </div>
+
+            <div class="header-portada">
+                <img src="logo.png" class="logo-portada">
+                <h1>¡Muy bien!</h1>
+            </div>
+
+            <div class="main"></div>
 
             <div class="footer">
                 <button class="boton" onclick="mostrarPortada()">Volver</button>
             </div>
+
         </div>
     `;
 }
