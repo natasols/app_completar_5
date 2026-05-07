@@ -2,13 +2,15 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Calcumat – Cinta cubierta hasta 10</title>
+<title>Calcumat Kinder – ¿Cuántas hay en la cinta?</title>
 
 <style>
 
 body{
-    font-family: 'Comic Sans MS', 'Trebuchet MS', sans-serif;
+    font-family:'Comic Sans MS','Trebuchet MS',sans-serif;
     margin:0;
+    text-align:center;
+    background:white;
 }
 
 /* CONTENEDOR */
@@ -17,24 +19,87 @@ body{
     display:flex;
     flex-direction:column;
     align-items:center;
+    position:relative;
 }
 
-/* HEADER */
-.header{
-    text-align:center;
-    margin-top:20px;
+/* FLECHAS */
+.flecha-nav{
+    position:absolute;
+    top:18px;
+    display:flex;
+    align-items:center;
+    gap:6px;
+    font-size:16px;
+    color:#9e9e9e;
+    cursor:pointer;
+    user-select:none;
+    transition:0.2s;
 }
 
-.logo-portada{ width:360px; }
-.logo-app{ width:140px; }
+.flecha-nav:hover{
+    color:#616161;
+    transform:scale(1.05);
+}
+
+.flecha-nav span{
+    font-size:22px;
+}
+
+.flecha-indice{
+    left:24px;
+}
+
+.flecha-inicio{
+    right:24px;
+}
+
+/* HEADERS */
+.header-portada{
+    margin-top:55px;
+}
+
+.header-app{
+    margin-top:14px;
+}
+
+.logo-portada{
+    width:360px;
+}
+
+.logo-app{
+    width:150px;
+}
+
+/* TEXTOS */
+h1{
+    font-size:36px;
+    margin:22px 0 8px 0;
+}
+
+h2{
+    font-size:30px;
+    margin:10px 0 6px 0;
+}
+
+.bajada{
+    font-size:24px;
+    margin-top:0;
+}
+
+.contador{
+    font-size:18px;
+    margin-top:4px;
+}
 
 /* MAIN */
 .main{
     flex:1;
+    width:100%;
     display:flex;
     flex-direction:column;
     align-items:center;
     justify-content:center;
+    padding:5px 0;
 }
 
 /* CINTA */
@@ -57,7 +122,7 @@ body{
     position:relative;
 }
 
-/* FICHA GRANDE (CLAVE) */
+/* FICHA */
 .ficha{
     width:75px;
     height:75px;
@@ -78,12 +143,19 @@ body{
 
 /* FOOTER */
 .footer{
-    padding:20px;
+    width:100%;
+    min-height:90px;
+    padding:5px 0 20px 0;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:15px;
+    flex-wrap:wrap;
 }
 
 .boton{
-    padding:15px 30px;
-    font-size:18px;
+    padding:14px 28px;
+    font-size:20px;
     background:#4CAF50;
     color:white;
     border:none;
@@ -92,11 +164,54 @@ body{
 }
 
 .reloj{
-    font-size:70px;
+    font-size:56px;
 }
 
 .oculto{
     visibility:hidden;
+}
+
+@media (max-height:750px){
+
+    .logo-app{
+        width:120px;
+    }
+
+    h2{
+        font-size:26px;
+        margin:6px 0 4px 0;
+    }
+
+    .contador{
+        font-size:16px;
+    }
+
+    .cinta{
+        grid-template-columns: repeat(10,78px);
+        margin-top:20px;
+    }
+
+    .casilla{
+        width:78px;
+        height:70px;
+        font-size:26px;
+    }
+
+    .ficha{
+        width:63px;
+        height:63px;
+    }
+
+    .ficha-extra{
+        width:63px;
+        height:63px;
+        top:-72px;
+    }
+
+    .footer{
+        min-height:75px;
+        padding-bottom:12px;
+    }
 }
 
 </style>
@@ -108,22 +223,35 @@ body{
 
 <script>
 
-let cantidad = 0;
-let ejercicio = 0;
-let total = 20;
+/* NAVEGACIÓN */
+function volverIndice(){
+    window.location.href = "index_kinder.html";
+}
+
+function volverInicio(){
+    mostrarPortada();
+}
 
 /* VOZ */
 function hablar(texto){
     let m = new SpeechSynthesisUtterance(texto);
     m.lang = "es-CL";
+
     let voz = speechSynthesis.getVoices().find(v => v.lang.includes("es"));
+
     if(voz) m.voice = voz;
+
     speechSynthesis.cancel();
     speechSynthesis.speak(m);
 }
 
+let cantidad = 0;
+let ejercicio = 0;
+let total = 20;
+
 /* GENERAR */
 function generarCantidad(){
+
     let r = Math.random();
 
     if(r < 0.8){
@@ -135,13 +263,24 @@ function generarCantidad(){
 
 /* PORTADA */
 function mostrarPortada(){
+
+    speechSynthesis.cancel();
+
     document.getElementById("app").innerHTML = `
         <div class="wrapper">
 
-            <div class="header">
+            <div class="flecha-nav flecha-indice" onclick="volverIndice()">
+                <span>←</span> Índice
+            </div>
+
+            <div class="header-portada">
                 <img src="logo.png" class="logo-portada">
-                <h2>Cuantificar hasta 10</h2>
-                <p>Cinta numerada – parte 2</p>
+
+                <h1>¿Cuántas hay en la cinta?</h1>
+
+                <div class="bajada">
+                    Cuantificar en la cinta numerada hasta 10 · Parte 2
+                </div>
             </div>
 
             <div class="main"></div>
@@ -175,10 +314,24 @@ function nuevoEjercicio(){
     document.getElementById("app").innerHTML = `
         <div class="wrapper">
 
-            <div class="header">
+            <div class="flecha-nav flecha-indice" onclick="volverIndice()">
+                <span>←</span> Índice
+            </div>
+
+            <div class="flecha-nav flecha-inicio" onclick="volverInicio()">
+                <span>↻</span> Inicio
+            </div>
+
+            <div class="header-app">
+
                 <img src="logo.png" class="logo-app">
+
                 <h2>¿Cuántas hay?</h2>
-                <div>Ejercicio ${ejercicio} de ${total}</div>
+
+                <div class="contador">
+                    Ejercicio ${ejercicio} de ${total}
+                </div>
+
             </div>
 
             <div class="main">
@@ -186,7 +339,9 @@ function nuevoEjercicio(){
             </div>
 
             <div id="footer" class="footer">
-                <button class="boton" onclick="iniciarEjercicio()">Iniciar ejercicio</button>
+                <button class="boton" onclick="iniciarEjercicio()">
+                    Iniciar ejercicio
+                </button>
             </div>
 
         </div>
@@ -197,24 +352,31 @@ function nuevoEjercicio(){
 function iniciarEjercicio(){
 
     let cinta = document.getElementById("cinta");
+
     cinta.className = "cinta";
     cinta.innerHTML = "";
 
     for(let i=1;i<=10;i++){
 
         let cas = document.createElement("div");
+
         cas.className="casilla";
 
         if(i <= cantidad){
+
             cas.innerHTML = `<div class="ficha"></div>`;
+
         }else{
+
             cas.innerText = i;
         }
 
         cinta.appendChild(cas);
     }
 
-    document.getElementById("footer").innerHTML = `<div class="reloj">⏳</div>`;
+    document.getElementById("footer").innerHTML = `
+        <div class="reloj">⏳</div>
+    `;
 
     setTimeout(ocultarTodo,3000);
 }
@@ -225,7 +387,9 @@ function ocultarTodo(){
     document.getElementById("cinta").classList.add("oculto");
 
     document.getElementById("footer").innerHTML = `
-        <button class="boton" onclick="mostrarRespuesta()">Verificar</button>
+        <button class="boton" onclick="mostrarRespuesta()">
+            Verificar
+        </button>
     `;
 }
 
@@ -233,6 +397,7 @@ function ocultarTodo(){
 function mostrarRespuesta(){
 
     let cinta = document.getElementById("cinta");
+
     cinta.classList.remove("oculto");
 
     let casillas = document.querySelectorAll(".casilla");
@@ -247,22 +412,40 @@ function mostrarRespuesta(){
     hablar("Hay " + cantidad);
 
     document.getElementById("footer").innerHTML = `
-        <button class="boton" onclick="nuevoEjercicio()">Siguiente</button>
+        <button class="boton" onclick="nuevoEjercicio()">
+            Siguiente
+        </button>
     `;
 }
 
 /* FINAL */
 function mostrarFinal(){
+
     document.getElementById("app").innerHTML = `
         <div class="wrapper">
 
-            <div class="header">
-                <img src="logo.png" class="logo-portada">
-                <h2>¡Muy bien!</h2>
+            <div class="flecha-nav flecha-indice" onclick="volverIndice()">
+                <span>←</span> Índice
             </div>
 
+            <div class="flecha-nav flecha-inicio" onclick="volverInicio()">
+                <span>↻</span> Inicio
+            </div>
+
+            <div class="header-portada">
+
+                <img src="logo.png" class="logo-portada">
+
+                <h1>¡Muy bien!</h1>
+
+            </div>
+
+            <div class="main"></div>
+
             <div class="footer">
-                <button class="boton" onclick="mostrarPortada()">Volver</button>
+                <button class="boton" onclick="mostrarPortada()">
+                    Volver
+                </button>
             </div>
 
         </div>
