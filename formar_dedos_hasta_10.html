@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Calcumat Kínder – Formar cantidades con los dedos</title>
+
+<style>
+
+body{
+    font-family:'Comic Sans MS','Trebuchet MS',sans-serif;
+    text-align:center;
+    background:white;
+    margin:0;
+}
+
+/* CONTENEDOR */
+.wrapper{
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    position:relative;
+}
+
+/* FLECHAS */
+.flecha-nav{
+    position:absolute;
+    top:18px;
+    display:flex;
+    align-items:center;
+    gap:6px;
+    font-size:16px;
+    color:#9e9e9e;
+    cursor:pointer;
+    user-select:none;
+    transition:0.2s;
+}
+
+.flecha-nav:hover{
+    color:#616161;
+    transform:scale(1.05);
+}
+
+.flecha-nav span{
+    font-size:22px;
+}
+
+.flecha-indice{ left:24px; }
+.flecha-inicio{ right:24px; }
+
+/* HEADERS */
+.header-portada{
+    margin-top:55px;
+}
+
+.header-app{
+    margin-top:14px;
+}
+
+.logo-portada{
+    width:360px;
+}
+
+.logo-manos{
+    width:160px;
+    margin-top:14px;
+    margin-bottom:10px;
+}
+
+/* TEXTOS */
+h1{
+    font-size:36px;
+    margin:22px 0 8px 0;
+}
+
+h2{
+    font-size:30px;
+    margin:10px 0 6px 0;
+}
+
+.bajada{
+    font-size:24px;
+    margin-top:0;
+}
+
+.contador{
+    font-size:18px;
+    margin-top:4px;
+}
+
+.texto{
+    font-size:30px;
+    color:#333;
+    margin-top:20px;
+}
+
+/* MAIN */
+.main{
+    flex:1;
+    width:100%;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    padding:5px 0;
+}
+
+/* NÚMERO */
+.numero{
+    font-size:150px;
+    color:#d32f2f;
+    margin:10px 0;
+    line-height:1;
+}
+
+/* MANOS */
+.manos{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:60px;
+    margin:30px;
+}
+
+.mano{
+    width:260px;
+}
+
+.mano.izq{
+    transform:scaleX(-1);
+}
+
+/* FOOTER */
+.footer{
+    width:100%;
+    min-height:90px;
+    padding:5px 0 20px 0;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:15px;
+    flex-wrap:wrap;
+}
+
+.boton{
+    padding:14px 28px;
+    font-size:20px;
+    background:#4CAF50;
+    color:white;
+    border:none;
+    border-radius:12px;
+    cursor:pointer;
+}
+
+.boton:hover{
+    transform:scale(1.05);
+}
+
+@media (max-height:750px){
+
+    .logo-manos{
+        width:120px;
+    }
+
+    h2{
+        font-size:26px;
+        margin:6px 0 4px 0;
+    }
+
+    .contador{
+        font-size:16px;
+    }
+
+    .numero{
+        font-size:120px;
+    }
+
+    .texto{
+        font-size:26px;
+        margin-top:12px;
+    }
+
+    .mano{
+        width:210px;
+    }
+
+    .manos{
+        margin:18px;
+        gap:40px;
+    }
+
+    .footer{
+        min-height:75px;
+        padding-bottom:12px;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<div id="app"></div>
+
+<script>
+
+/* NAVEGACIÓN */
+function volverIndice(){
+    window.location.href = "index_kinder_v2.html";
+}
+
+function volverInicio(){
+    portada();
+}
+
+/* VOZ */
+let vocesDisponibles = [];
+
+speechSynthesis.onvoiceschanged = () => {
+    vocesDisponibles = speechSynthesis.getVoices();
+};
+
+function hablar(texto){
+
+    let msg = new SpeechSynthesisUtterance(texto);
+    msg.lang = "es-CL";
+    msg.rate = 0.9;
+    msg.pitch = 1;
+    msg.volume = 1;
+
+    let voz = vocesDisponibles.find(v =>
+        v.lang.includes("es") &&
+        (v.name.toLowerCase().includes("female") ||
+         v.name.toLowerCase().includes("google"))
+    );
+
+    if(voz){
+        msg.voice = voz;
+    }
+
+    speechSynthesis.cancel();
+    speechSynthesis.speak(msg);
+}
+
+/* VARIABLES */
+let numeros = [6,7,8,9,10];
+let secuencia = [];
+let index = 0;
+let numeroActual = 0;
+let subPaso = 0;
+let totalEjercicios = 5;
+
+/* DESCOMPOSICIONES */
+const descomposiciones = {
+    6: [[5,1],[4,2],[3,3]],
+    7: [[5,2],[4,3]],
+    8: [[5,3],[4,4]],
+    9: [[5,4]],
+    10: [[5,5]]
+};
+
+/* SECUENCIA */
+function generarSecuencia(){
+
+    secuencia = [...numeros];
+
+    for(let i=secuencia.length-1;i>0;i--){
+        let j = Math.floor(Math.random()*(i+1));
+        [secuencia[i],secuencia[j]] = [secuencia[j],secuencia[i]];
+    }
+}
+
+/* PORTADA */
+function portada(){
+
+    speechSynthesis.cancel();
+
+    document.getElementById("app").innerHTML = `
+        <div class="wrapper">
+
+            <div class="flecha-nav flecha-indice" onclick="volverIndice()">
+                <span>←</span> Índice
+            </div>
+
+            <div class="header-portada">
+                <img src="logo.png" class="logo-portada">
+                <h1>¿Formemos cantidades con los dedos?</h1>
+                <div class="bajada">Producir cantidades hasta 10</div>
+            </div>
+
+            <div class="main"></div>
+
+            <div class="footer">
+                <button class="boton" onclick="iniciar()">Iniciar</button>
+            </div>
+
+        </div>
+    `;
+}
+
+/* INICIO */
+function iniciar(){
+    generarSecuencia();
+    index = 0;
+    siguienteNumero();
+}
+
+/* SIGUIENTE NÚMERO */
+function siguienteNumero(){
+
+    if(index >= totalEjercicios){
+        final();
+        return;
+    }
+
+    numeroActual = secuencia[index];
+    index++;
+    subPaso = 0;
+
+    pantallaNumero();
+}
+
+/* PANTALLA: FORMAR */
+function pantallaNumero(){
+
+    document.getElementById("app").innerHTML = `
+        <div class="wrapper">
+
+            <div class="flecha-nav flecha-indice" onclick="volverIndice()">
+                <span>←</span> Índice
+            </div>
+
+            <div class="flecha-nav flecha-inicio" onclick="volverInicio()">
+                <span>↻</span> Inicio
+            </div>
+
+            <div class="header-app">
+                <img src="logo_manos.png" class="logo-manos">
+                <div class="contador">Ejercicio ${index} de ${totalEjercicios}</div>
+            </div>
+
+            <div class="main">
+                <div class="numero">${numeroActual}</div>
+                <div class="texto">Forma el ${numeroActual}</div>
+            </div>
+
+            <div class="footer">
+                <button class="boton" onclick="mostrarRespuesta()">Verificar</button>
+            </div>
+
+        </div>
+    `;
+
+    hablar("Forma el " + numeroActual);
+}
+
+/* PANTALLA: OTRA FORMA */
+function pedirOtraForma(){
+
+    document.getElementById("app").innerHTML = `
+        <div class="wrapper">
+
+            <div class="flecha-nav flecha-indice" onclick="volverIndice()">
+                <span>←</span> Índice
+            </div>
+
+            <div class="flecha-nav flecha-inicio" onclick="volverInicio()">
+                <span>↻</span> Inicio
+            </div>
+
+            <div class="header-app">
+                <img src="logo_manos.png" class="logo-manos">
+                <div class="contador">Ejercicio ${index} de ${totalEjercicios}</div>
+            </div>
+
+            <div class="main">
+                <div class="numero">${numeroActual}</div>
+                <div class="texto">¿Puedes formarlo de otra manera?</div>
+            </div>
+
+            <div class="footer">
+                <button class="boton" onclick="mostrarRespuesta()">Verificar</button>
+            </div>
+
+        </div>
+    `;
+
+    hablar("¿Puedes formarlo de otra manera?");
+}
+
+/* MOSTRAR RESPUESTA */
+function mostrarRespuesta(){
+
+    let combinaciones = descomposiciones[numeroActual];
+    let c = combinaciones[subPaso];
+
+    document.getElementById("app").innerHTML = `
+        <div class="wrapper">
+
+            <div class="flecha-nav flecha-indice" onclick="volverIndice()">
+                <span>←</span> Índice
+            </div>
+
+            <div class="flecha-nav flecha-inicio" onclick="volverInicio()">
+                <span>↻</span> Inicio
+            </div>
+
+            <div class="header-app">
+                <img src="logo_manos.png" class="logo-manos">
+            </div>
+
+            <div class="main">
+                <div class="texto">Una forma es esta</div>
+                <div class="manos">
+                    <img src="mano_${c[0]}.png" class="mano izq">
+                    <img src="mano_${c[1]}.png" class="mano">
+                </div>
+            </div>
+
+            <div class="footer">
+                <button class="boton" onclick="avanzarForma()">
+                    ${subPaso < combinaciones.length-1 ? "Otra forma" : "Siguiente"}
+                </button>
+            </div>
+
+        </div>
+    `;
+
+    hablar("Una forma es esta");
+}
+
+/* AVANZAR FORMA */
+function avanzarForma(){
+
+    let combinaciones = descomposiciones[numeroActual];
+
+    subPaso++;
+
+    if(subPaso < combinaciones.length){
+        pedirOtraForma();
+    }else{
+        siguienteNumero();
+    }
+}
+
+/* FINAL */
+function final(){
+
+    document.getElementById("app").innerHTML = `
+        <div class="wrapper">
+
+            <div class="flecha-nav flecha-indice" onclick="volverIndice()">
+                <span>←</span> Índice
+            </div>
+
+            <div class="flecha-nav flecha-inicio" onclick="volverInicio()">
+                <span>↻</span> Inicio
+            </div>
+
+            <div class="header-portada">
+                <img src="logo.png" class="logo-portada">
+                <h1>¡Muy bien!</h1>
+            </div>
+
+            <div class="main"></div>
+
+            <div class="footer">
+                <button class="boton" onclick="portada()">Volver</button>
+            </div>
+
+        </div>
+    `;
+
+    hablar("Muy bien");
+}
+
+/* START */
+portada();
+
+</script>
+
+</body>
+</html>
