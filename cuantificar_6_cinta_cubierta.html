@@ -2,55 +2,96 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Calcumat Kinder – Cinta cubierta 6</title>
+<title>Calcumat Pre-Kínder – ¿Cuántas hay en la cinta?</title>
 
 <style>
 
 body{
-    font-family: 'Comic Sans MS', 'Trebuchet MS', sans-serif;
+    font-family:'Comic Sans MS','Trebuchet MS',sans-serif;
+    margin:0;
     text-align:center;
     background:white;
 }
 
-/* LOGOS */
-.logo-portada{
-    width:260px;
-    margin-top:40px;
+/* CONTENEDOR */
+.wrapper{
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    position:relative;
 }
 
-.logo-app{
-    width:220px;
-    margin-top:15px;
-}
-
-/* PORTADA */
-.portada{
-    margin-top:60px;
-}
-
-/* BOTONES */
-.boton{
-    margin:12px;
-    padding:15px 25px;
-    font-size:18px;
-    background:#4CAF50;
-    color:white;
-    border:none;
-    border-radius:12px;
-    cursor:pointer;
-}
-
-/* CONTADOR */
-.contador{
-    margin-top:10px;
+/* FLECHAS */
+.flecha-nav{
+    position:absolute;
+    top:18px;
+    display:flex;
+    align-items:center;
+    gap:6px;
     font-size:16px;
-    color:#555;
+    color:#9e9e9e;
+    cursor:pointer;
+    user-select:none;
+    transition:0.2s;
+}
+
+.flecha-nav:hover{
+    color:#616161;
+    transform:scale(1.05);
+}
+
+.flecha-nav span{
+    font-size:22px;
+}
+
+.flecha-indice{ left:24px; }
+.flecha-inicio{ right:24px; }
+
+/* HEADERS */
+.header-portada{ margin-top:55px; }
+.header-app{ margin-top:14px; }
+
+.logo-portada{ width:360px; }
+.logo-app{ width:150px; }
+.logo-manos{ width:150px; }
+
+/* TEXTOS */
+h1{
+    font-size:36px;
+    margin:22px 0 8px 0;
+}
+
+h2{
+    font-size:30px;
+    margin:10px 0 6px 0;
+}
+
+.bajada{
+    font-size:24px;
+    margin-top:0;
+}
+
+.contador{
+    font-size:18px;
+    margin-top:4px;
+}
+
+/* MAIN */
+.main{
+    flex:1;
+    width:100%;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    padding:5px 0;
 }
 
 /* CINTA */
 .cinta{
     display:grid;
-    grid-template-columns: repeat(6,80px);
+    grid-template-columns:repeat(6,80px);
     justify-content:center;
     margin-top:40px;
 }
@@ -85,15 +126,78 @@ body{
     top:-75px;
 }
 
-/* RELOJ */
-.reloj{
-    font-size:60px;
-    margin-top:20px;
+/* FOOTER */
+.footer{
+    width:100%;
+    min-height:90px;
+    padding:5px 0 20px 0;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:15px;
+    flex-wrap:wrap;
 }
 
-/* OCULTAR */
+.boton{
+    padding:14px 28px;
+    font-size:20px;
+    background:#4CAF50;
+    color:white;
+    border:none;
+    border-radius:12px;
+    cursor:pointer;
+}
+
+.reloj{
+    font-size:56px;
+}
+
 .oculto{
     visibility:hidden;
+}
+
+@media (max-height:750px){
+
+    .logo-app,
+    .logo-manos{
+        width:120px;
+    }
+
+    h2{
+        font-size:26px;
+        margin:6px 0 4px 0;
+    }
+
+    .contador{
+        font-size:16px;
+    }
+
+    .cinta{
+        grid-template-columns:repeat(6,68px);
+        margin-top:25px;
+    }
+
+    .casilla{
+        width:68px;
+        height:68px;
+        font-size:24px;
+    }
+
+    .ficha{
+        width:58px;
+        height:58px;
+    }
+
+    .ficha-extra{
+        width:58px;
+        height:58px;
+        top:-63px;
+    }
+
+    .footer{
+        min-height:75px;
+        padding-bottom:12px;
+    }
 }
 
 </style>
@@ -105,7 +209,16 @@ body{
 
 <script>
 
-/* 🔊 VOZ */
+/* NAVEGACIÓN */
+function volverIndice(){
+    window.location.href = "index_pre_kinder.html";
+}
+
+function volverInicio(){
+    mostrarPortada();
+}
+
+/* VOZ */
 function hablar(texto){
     let msg = new SpeechSynthesisUtterance(texto);
     msg.lang = "es-CL";
@@ -127,12 +240,27 @@ let total = 20;
 
 /* PORTADA */
 function mostrarPortada(){
+    speechSynthesis.cancel();
+
     document.getElementById("app").innerHTML = `
-        <div class="portada">
-            <img src="logo.png" class="logo-portada">
-            <h2>Cuantificar hasta 6</h2>
-            <p>Cinta numerada · Parte 2</p>
-            <button class="boton" onclick="iniciar()">Comenzar</button>
+        <div class="wrapper">
+
+            <div class="flecha-nav flecha-indice" onclick="volverIndice()">
+                <span>←</span> Índice
+            </div>
+
+            <div class="header-portada">
+                <img src="logo.png" class="logo-portada">
+                <h1>¿Cuántas hay en la cinta?</h1>
+                <div class="bajada">Cuantificar en la cinta numerada hasta 6 · Parte 2</div>
+            </div>
+
+            <div class="main"></div>
+
+            <div class="footer">
+                <button class="boton" onclick="iniciar()">Iniciar</button>
+            </div>
+
         </div>
     `;
 }
@@ -156,14 +284,30 @@ function siguienteEjercicio(){
     cantidad = Math.floor(Math.random()*6)+1;
 
     document.getElementById("app").innerHTML = `
-        <img src="logo_manos.png" class="logo-app">
-        <h2>¿Cuántas hay?</h2>
-        <div class="contador">Ejercicio ${ejercicio} de ${total}</div>
+        <div class="wrapper">
 
-        <div id="cinta"></div>
+            <div class="flecha-nav flecha-indice" onclick="volverIndice()">
+                <span>←</span> Índice
+            </div>
 
-        <div id="botonera">
-            <button class="boton" onclick="iniciarEjercicio()">Iniciar ejercicio</button>
+            <div class="flecha-nav flecha-inicio" onclick="volverInicio()">
+                <span>↻</span> Inicio
+            </div>
+
+            <div class="header-app">
+                <img src="logo_manos.png" class="logo-manos">
+                <h2>¿Cuántas hay?</h2>
+                <div class="contador">Ejercicio ${ejercicio} de ${total}</div>
+            </div>
+
+            <div class="main">
+                <div id="cinta"></div>
+            </div>
+
+            <div id="botonera" class="footer">
+                <button class="boton" onclick="iniciarEjercicio()">Iniciar ejercicio</button>
+            </div>
+
         </div>
     `;
 
@@ -191,7 +335,9 @@ function iniciarEjercicio(){
         cinta.appendChild(cas);
     }
 
-    document.getElementById("botonera").innerHTML = `<div class="reloj">⏳</div>`;
+    document.getElementById("botonera").innerHTML = `
+        <div class="reloj">⏳</div>
+    `;
 
     setTimeout(ocultarTodo,3000);
 }
@@ -221,7 +367,7 @@ function mostrarRespuesta(){
         <div class="ficha-extra"></div>
     `;
 
-    hablar("Había " + cantidad);
+    hablar("Hay " + cantidad);
 
     document.getElementById("botonera").innerHTML = `
         <button class="boton" onclick="siguienteEjercicio()">Siguiente</button>
@@ -232,11 +378,27 @@ function mostrarRespuesta(){
 function mostrarFinal(){
 
     document.getElementById("app").innerHTML = `
-        <div class="portada">
-            <img src="logo.png" class="logo-portada">
-            <h2>¡Muy bien!</h2>
-            <p>Terminaste la rutina</p>
-            <button class="boton" onclick="mostrarPortada()">Volver a jugar</button>
+        <div class="wrapper">
+
+            <div class="flecha-nav flecha-indice" onclick="volverIndice()">
+                <span>←</span> Índice
+            </div>
+
+            <div class="flecha-nav flecha-inicio" onclick="volverInicio()">
+                <span>↻</span> Inicio
+            </div>
+
+            <div class="header-portada">
+                <img src="logo.png" class="logo-portada">
+                <h1>¡Muy bien!</h1>
+            </div>
+
+            <div class="main"></div>
+
+            <div class="footer">
+                <button class="boton" onclick="mostrarPortada()">Volver</button>
+            </div>
+
         </div>
     `;
 
