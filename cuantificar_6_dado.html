@@ -2,64 +2,103 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Calcumat – Dado hasta 6</title>
+<title>Calcumat Pre-Kínder – ¿Cuántas hay en el dado?</title>
 
 <style>
 
 body{
-    font-family: 'Comic Sans MS', 'Trebuchet MS', sans-serif;
-    background:white;
+    font-family:'Comic Sans MS','Trebuchet MS',sans-serif;
     margin:0;
-}
-
-/* NAV */
-.nav{
-    width:100%;
-    display:flex;
-    justify-content:space-between;
-    padding:10px 20px;
-    box-sizing:border-box;
-    font-size:14px;
-    color:#777;
-}
-
-.nav span{
-    cursor:pointer;
-    opacity:0.6;
-    transition:0.2s;
-}
-
-.nav span:hover{
-    opacity:1;
-    color:#000;
+    text-align:center;
+    background:white;
 }
 
 /* CONTENEDOR */
 .wrapper{
+    min-height:100vh;
     display:flex;
     flex-direction:column;
     align-items:center;
+    position:relative;
 }
 
-/* LOGOS */
+/* FLECHAS */
+.flecha-nav{
+    position:absolute;
+    top:18px;
+    display:flex;
+    align-items:center;
+    gap:6px;
+    font-size:16px;
+    color:#9e9e9e;
+    cursor:pointer;
+    user-select:none;
+    transition:0.2s;
+}
+
+.flecha-nav:hover{
+    color:#616161;
+    transform:scale(1.05);
+}
+
+.flecha-nav span{
+    font-size:22px;
+}
+
+.flecha-indice{ left:24px; }
+.flecha-inicio{ right:24px; }
+
+/* HEADERS */
+.header-portada{
+    margin-top:55px;
+}
+
+.header-app{
+    margin-top:14px;
+}
+
 .logo-portada{
-    width:260px;
-    margin-top:20px;
+    width:360px;
 }
 
 .logo-app{
-    width:200px;
-    margin-top:10px;
+    width:150px;
 }
 
-/* TITULOS */
+.logo-manos{
+    width:150px;
+}
+
+/* TEXTOS */
+h1{
+    font-size:36px;
+    margin:22px 0 8px 0;
+}
+
 h2{
-    margin:10px 0 5px 0;
+    font-size:30px;
+    margin:10px 0 6px 0;
+}
+
+.bajada{
+    font-size:24px;
+    margin-top:0;
 }
 
 .contador{
-    color:#555;
-    margin-bottom:10px;
+    font-size:18px;
+    margin-top:4px;
+}
+
+/* MAIN */
+.main{
+    flex:1;
+    width:100%;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    padding:5px 0;
 }
 
 /* ZONA CENTRAL */
@@ -68,8 +107,8 @@ h2{
     align-items:center;
     justify-content:center;
     gap:80px;
-    margin:40px 0;
-    min-height:200px;
+    margin:30px 0;
+    min-height:210px;
 }
 
 /* DADO */
@@ -79,8 +118,8 @@ h2{
     border:4px solid black;
     border-radius:25px;
     display:grid;
-    grid-template-columns: repeat(3,1fr);
-    grid-template-rows: repeat(3,1fr);
+    grid-template-columns:repeat(3,1fr);
+    grid-template-rows:repeat(3,1fr);
 }
 
 .punto{
@@ -93,9 +132,10 @@ h2{
 
 /* MANOS */
 .zona-manos{
-    width:140px;
+    width:160px;
     display:flex;
     justify-content:center;
+    align-items:center;
 }
 
 .manos{
@@ -103,22 +143,33 @@ h2{
 }
 
 .espejo{
-    transform: scaleX(-1);
+    transform:scaleX(-1);
 }
 
 /* NUMERO */
 .resultado{
-    width:100px;
+    width:110px;
     text-align:center;
     font-size:110px;
     color:#e53935;
+    line-height:1;
 }
 
-/* BOTON */
+/* FOOTER */
+.footer{
+    width:100%;
+    min-height:90px;
+    padding:5px 0 20px 0;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:15px;
+    flex-wrap:wrap;
+}
+
 .boton{
-    margin-top:10px;
-    padding:15px 25px;
-    font-size:18px;
+    padding:14px 28px;
+    font-size:20px;
     background:#4CAF50;
     color:white;
     border:none;
@@ -126,14 +177,59 @@ h2{
     cursor:pointer;
 }
 
-/* RELOJ */
 .reloj{
-    font-size:60px;
-    margin-top:20px;
+    font-size:56px;
 }
 
 .oculto{
     visibility:hidden;
+}
+
+@media (max-height:750px){
+
+    .logo-app,
+    .logo-manos{
+        width:120px;
+    }
+
+    h2{
+        font-size:26px;
+        margin:6px 0 4px 0;
+    }
+
+    .contador{
+        font-size:16px;
+    }
+
+    .contenedor{
+        gap:50px;
+        margin:18px 0;
+        min-height:180px;
+    }
+
+    .dado{
+        width:130px;
+        height:130px;
+    }
+
+    .punto{
+        width:23px;
+        height:23px;
+    }
+
+    .manos{
+        width:105px;
+    }
+
+    .resultado{
+        font-size:88px;
+        width:90px;
+    }
+
+    .footer{
+        min-height:75px;
+        padding-bottom:12px;
+    }
 }
 
 </style>
@@ -145,12 +241,12 @@ h2{
 
 <script>
 
-/* NAV FUNCIONES */
-function irIndice(){
-    window.location.href = "index.html";
+/* NAVEGACIÓN */
+function volverIndice(){
+    window.location.href = "index_pre_kinder.html";
 }
 
-function reiniciarApp(){
+function volverInicio(){
     mostrarPortada();
 }
 
@@ -173,28 +269,6 @@ let numero = 0;
 let ejercicio = 0;
 let total = 10;
 
-/* NAV HTML */
-function navHTML(){
-    return `
-        <div class="nav">
-            <span onclick="irIndice()">← Índice</span>
-            <span onclick="reiniciarApp()">↺ Inicio</span>
-        </div>
-    `;
-}
-
-/* PORTADA */
-function mostrarPortada(){
-    document.getElementById("app").innerHTML = `
-        ${navHTML()}
-        <div class="wrapper">
-            <img src="logo.png" class="logo-portada">
-            <h2>Cuantificar hasta 6 en el dado</h2>
-            <button class="boton" onclick="iniciar()">Comenzar</button>
-        </div>
-    `;
-}
-
 /* DADO */
 function generarDado(n){
     let posiciones = {
@@ -207,23 +281,55 @@ function generarDado(n){
     };
 
     let html = "";
+
     for(let i=1;i<=9;i++){
         html += posiciones[n].includes(i)
             ? `<div class="punto"></div>`
             : `<div></div>`;
     }
+
     return html;
 }
 
 /* MANOS */
 function obtenerManos(n){
+
     if(n === 6){
         return `
             <img src="mano_3.png" class="manos espejo">
             <img src="mano_3.png" class="manos">
         `;
     }
+
     return `<img src="mano_${n}.png" class="manos">`;
+}
+
+/* PORTADA */
+function mostrarPortada(){
+
+    speechSynthesis.cancel();
+
+    document.getElementById("app").innerHTML = `
+        <div class="wrapper">
+
+            <div class="flecha-nav flecha-indice" onclick="volverIndice()">
+                <span>←</span> Índice
+            </div>
+
+            <div class="header-portada">
+                <img src="logo.png" class="logo-portada">
+                <h1>¿Cuántas hay en el dado?</h1>
+                <div class="bajada">Cuantificar de súbito hasta 6.</div>
+            </div>
+
+            <div class="main"></div>
+
+            <div class="footer">
+                <button class="boton" onclick="iniciar()">Iniciar</button>
+            </div>
+
+        </div>
+    `;
 }
 
 /* INICIO */
@@ -245,21 +351,31 @@ function siguienteEjercicio(){
     numero = Math.floor(Math.random()*6)+1;
 
     document.getElementById("app").innerHTML = `
-        ${navHTML()}
         <div class="wrapper">
 
-            <img src="logo_manos.png" class="logo-app">
-
-            <h2>¿Cuántos puntos hay?</h2>
-            <div class="contador">Ejercicio ${ejercicio} de ${total}</div>
-
-            <div class="contenedor">
-                <div id="zonaManos" class="zona-manos"></div>
-                <div id="dado" class="dado"></div>
-                <div id="numero" class="resultado"></div>
+            <div class="flecha-nav flecha-indice" onclick="volverIndice()">
+                <span>←</span> Índice
             </div>
 
-            <div id="botonera">
+            <div class="flecha-nav flecha-inicio" onclick="volverInicio()">
+                <span>↻</span> Inicio
+            </div>
+
+            <div class="header-app">
+                <img src="logo_manos.png" class="logo-manos">
+                <h2>¿Cuántos puntos hay?</h2>
+                <div class="contador">Ejercicio ${ejercicio} de ${total}</div>
+            </div>
+
+            <div class="main">
+                <div class="contenedor">
+                    <div id="zonaManos" class="zona-manos"></div>
+                    <div id="dado" class="dado"></div>
+                    <div id="numero" class="resultado"></div>
+                </div>
+            </div>
+
+            <div id="botonera" class="footer">
                 <button class="boton" onclick="iniciarEjercicio()">Iniciar ejercicio</button>
             </div>
 
@@ -267,7 +383,7 @@ function siguienteEjercicio(){
     `;
 }
 
-/* ANIMACION */
+/* ANIMACIÓN */
 function animarDado(final){
     let dado = document.getElementById("dado");
     let cambios = 0;
@@ -277,11 +393,12 @@ function animarDado(final){
         dado.innerHTML = generarDado(r);
 
         cambios++;
+
         if(cambios > 10){
             clearInterval(intervalo);
             dado.innerHTML = generarDado(final);
         }
-    }, 80);
+    },80);
 }
 
 /* INICIAR */
@@ -289,13 +406,16 @@ function iniciarEjercicio(){
 
     animarDado(numero);
 
-    document.getElementById("botonera").innerHTML = `<div class="reloj">⏳</div>`;
+    document.getElementById("botonera").innerHTML = `
+        <div class="reloj">⏳</div>
+    `;
 
     setTimeout(ocultar,3000);
 }
 
 /* OCULTAR */
 function ocultar(){
+
     document.getElementById("dado").classList.add("oculto");
 
     document.getElementById("botonera").innerHTML = `
@@ -320,12 +440,29 @@ function verificar(){
 
 /* FINAL */
 function mostrarFinal(){
+
     document.getElementById("app").innerHTML = `
-        ${navHTML()}
         <div class="wrapper">
-            <img src="logo.png" class="logo-portada">
-            <h2>¡Muy bien!</h2>
-            <button class="boton" onclick="mostrarPortada()">Volver a jugar</button>
+
+            <div class="flecha-nav flecha-indice" onclick="volverIndice()">
+                <span>←</span> Índice
+            </div>
+
+            <div class="flecha-nav flecha-inicio" onclick="volverInicio()">
+                <span>↻</span> Inicio
+            </div>
+
+            <div class="header-portada">
+                <img src="logo.png" class="logo-portada">
+                <h1>¡Muy bien!</h1>
+            </div>
+
+            <div class="main"></div>
+
+            <div class="footer">
+                <button class="boton" onclick="mostrarPortada()">Volver</button>
+            </div>
+
         </div>
     `;
 }
