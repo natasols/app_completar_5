@@ -2,11 +2,11 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Calcumat v2 – Cinta numerada</title>
+<title>Calcumat v2 – Cinta numerada Prekínder</title>
 
 <style>
 :root{
-    --tam:clamp(58px,7.4vw,86px);
+    --tam:clamp(64px,9vw,92px);
     --ink:#06233f;
     --muted:#64748b;
     --cyan:#0891b2;
@@ -169,7 +169,7 @@ h2{ font-size:clamp(24px,2.6vw,34px); margin:8px 0 4px; font-weight:650; }
 
 .cinta{
     display:grid;
-    grid-template-columns:repeat(10,var(--tam));
+    grid-template-columns:repeat(6,var(--tam));
     margin-top:16px;
     overflow:hidden;
     border:3px solid rgba(6,35,63,.86);
@@ -296,7 +296,7 @@ h2{ font-size:clamp(24px,2.6vw,34px); margin:8px 0 4px; font-weight:650; }
 @keyframes softAppear{ from{ opacity:0; transform:scale(.985); } to{ opacity:1; transform:scale(1); } }
 
 @media (max-height:760px){
-    :root{ --tam:clamp(52px,6.8vw,74px); }
+    :root{ --tam:clamp(56px,8vw,80px); }
     .wrapper{ padding-top:14px; }
     .header-portada,.header-app{ margin-top:44px; padding-block:14px; }
     h1{ font-size:38px; margin-top:12px; }
@@ -308,7 +308,7 @@ h2{ font-size:clamp(24px,2.6vw,34px); margin:8px 0 4px; font-weight:650; }
 }
 
 @media (max-width:860px){
-    :root{ --tam:clamp(34px,8.7vw,58px); }
+    :root{ --tam:clamp(42px,13vw,62px); }
     .casilla,.numero{ border-radius:12px; }
     .cinta{ overflow-x:auto; }
 }
@@ -329,10 +329,12 @@ h2{ font-size:clamp(24px,2.6vw,34px); margin:8px 0 4px; font-weight:650; }
 
 <script>
 
-/* NAVEGACIÓN */
+/* GITHUB */
+const BASE = "https://natasols.github.io/calcumat-kinder/";
 
+/* NAVEGACIÓN */
 function volverIndice(){
-    window.location.href = "/kinder";
+    window.location.href = "/prekinder";
 }
 
 function volverInicio(){
@@ -340,20 +342,18 @@ function volverInicio(){
 }
 
 /* VOZ */
-
 function hablar(texto){
 
     let msg = new SpeechSynthesisUtterance(texto);
 
     msg.lang = "es-CL";
 
-    let voz = speechSynthesis.getVoices().find(
-        v => v.lang.includes("es")
-    );
+    let voz = speechSynthesis.getVoices().find(v => v.lang.includes("es"));
 
     if(voz) msg.voice = voz;
 
     speechSynthesis.cancel();
+
     speechSynthesis.speak(msg);
 }
 
@@ -366,13 +366,11 @@ let respuestas = {};
 let tarjetaSeleccionada = null;
 
 /* PORTADA */
-
 function portada(){
 
     speechSynthesis.cancel();
 
     document.getElementById("app").innerHTML = `
-
         <div class="wrapper">
 
             <div class="flecha-nav flecha-indice" onclick="volverIndice()">
@@ -388,7 +386,7 @@ function portada(){
                 <h1>¿Completemos la cinta numerada?</h1>
 
                 <div class="bajada">
-                    Completar secuencia numérica hasta 10 · Parte 1
+                    Completar secuencia numérica hasta 6 · Parte 1
                 </div>
 
             </div>
@@ -396,11 +394,9 @@ function portada(){
             <div class="main"></div>
 
             <div class="footer">
-
                 <button class="boton" onclick="iniciar()">
                     Iniciar
                 </button>
-
             </div>
 
         </div>
@@ -408,32 +404,32 @@ function portada(){
 }
 
 function iniciar(){
+
     ejercicio = 0;
+
     siguiente();
 }
 
 /* NIVEL */
-
 function obtenerNivel(){
 
     let ciclo = (ejercicio % 6);
 
     if(ciclo < 4) return 2;
 
-    if(ciclo === 4) return 4;
+    if(ciclo === 4) return 3;
 
-    return 6;
+    return 4;
 }
 
 /* NUEVO */
-
 function siguiente(){
 
     ejercicio++;
 
     let cantidadFaltantes = obtenerNivel();
 
-    cinta = Array.from({length:10}, (_,i)=>i+1);
+    cinta = Array.from({length:6}, (_,i)=>i+1);
 
     faltantes = [];
 
@@ -443,7 +439,7 @@ function siguiente(){
 
     while(faltantes.length < cantidadFaltantes){
 
-        let n = Math.floor(Math.random()*9)+2;
+        let n = Math.floor(Math.random()*5)+2;
 
         if(!faltantes.includes(n)){
             faltantes.push(n);
@@ -451,7 +447,6 @@ function siguiente(){
     }
 
     document.getElementById("app").innerHTML = `
-
         <div class="wrapper">
 
             <div class="flecha-nav flecha-indice" onclick="volverIndice()">
@@ -496,11 +491,11 @@ function siguiente(){
     `;
 
     renderCinta();
+
     renderBanco();
 }
 
 /* CINTA */
-
 function renderCinta(){
 
     let cont = document.getElementById("cinta");
@@ -549,7 +544,6 @@ function renderCinta(){
 }
 
 /* CREAR TARJETA */
-
 function crearTarjeta(valor, draggable=true){
 
     let div = document.createElement("div");
@@ -623,16 +617,13 @@ function colocarEnCasilla(casilla, val){
 }
 
 /* BANCO */
-
 function renderBanco(){
 
     let banco = document.getElementById("banco");
 
     banco.innerHTML = "";
 
-    let numeros = cinta
-        .filter(n => n !== 1)
-        .sort(()=>Math.random()-0.5);
+    let numeros = cinta.filter(n => n !== 1).sort(()=>Math.random()-0.5);
 
     numeros.forEach(n=>{
 
@@ -643,7 +634,6 @@ function renderBanco(){
 }
 
 /* DEVOLVER */
-
 function devolverAlBanco(valor){
 
     let original = document.getElementById("num"+valor);
@@ -652,7 +642,6 @@ function devolverAlBanco(valor){
 }
 
 /* VERIFICAR */
-
 function verificar(){
 
     let todoCorrecto = true;
@@ -706,22 +695,22 @@ function verificar(){
 }
 
 /* AVANZAR */
-
 function avanzar(){
 
     if(ejercicio < total){
+
         siguiente();
+
     }else{
+
         mostrarFinal();
     }
 }
 
 /* FINAL */
-
 function mostrarFinal(){
 
     document.getElementById("app").innerHTML = `
-
         <div class="wrapper">
 
             <div class="flecha-nav flecha-indice" onclick="volverIndice()">

@@ -2,14 +2,28 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Calcumat Kinder – Completar cinta numerada · Parte 2</title>
+<title>Calcumat v2 – Cinta numerada · Parte 2</title>
 
 <style>
+:root{
+    --tam:clamp(58px,7.4vw,86px);
+    --ink:#06233f;
+    --muted:#64748b;
+    --cyan:#0891b2;
+    --teal:#14b8a6;
+    --paper:rgba(255,255,255,.84);
+    --shadow:0 24px 70px -48px rgba(15,23,42,.72);
+}
+
+*{ box-sizing:border-box; }
+
 body{
-    font-family:'Comic Sans MS','Trebuchet MS',sans-serif;
+    font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
     margin:0;
+    min-height:100vh;
     text-align:center;
-    background:white;
+    color:var(--ink);
+    background:linear-gradient(145deg,#f3fafc 0%,#eef7fa 48%,#fff9f2 100%);
 }
 
 .wrapper{
@@ -18,203 +32,313 @@ body{
     flex-direction:column;
     align-items:center;
     position:relative;
+    overflow:hidden;
+    padding:22px clamp(16px,3vw,42px) 20px;
 }
 
-/* FLECHAS */
+.wrapper::before{
+    content:"";
+    position:absolute;
+    inset:auto auto -18rem 50%;
+    width:58rem;
+    height:58rem;
+    transform:translateX(-50%);
+    background:radial-gradient(circle,rgba(34,211,238,.18),rgba(34,211,238,.06) 36%,transparent 66%);
+    pointer-events:none;
+}
+
+.wrapper::after{
+    content:"";
+    position:absolute;
+    left:50%;
+    top:58%;
+    width:48rem;
+    height:48rem;
+    transform:translate(-50%,-50%);
+    background:url('/images/calcumat-hands-bg.png') center/contain no-repeat;
+    opacity:.05;
+    filter:saturate(1.08);
+    pointer-events:none;
+}
+
 .flecha-nav{
     position:absolute;
-    top:18px;
-    display:flex;
+    top:20px;
+    z-index:5;
+    display:inline-flex;
     align-items:center;
-    gap:6px;
-    font-size:16px;
-    color:#9e9e9e;
+    gap:8px;
+    min-height:42px;
+    padding:0 16px;
+    border:1px solid rgba(255,255,255,.86);
+    border-radius:999px;
+    background:rgba(255,255,255,.72);
+    color:#64748b;
+    font-size:14px;
+    font-weight:700;
     cursor:pointer;
     user-select:none;
-    transition:0.2s;
+    box-shadow:0 16px 34px -28px rgba(15,23,42,.58);
+    backdrop-filter:blur(16px);
+    transition:transform .22s ease,color .22s ease,background .22s ease;
 }
 
 .flecha-nav:hover{
-    color:#616161;
-    transform:scale(1.05);
+    color:var(--cyan);
+    background:rgba(255,255,255,.92);
+    transform:translateY(-1px);
 }
 
-.flecha-nav span{
-    font-size:22px;
-}
+.flecha-nav span{ font-size:18px; line-height:1; }
+.flecha-indice{ left:clamp(16px,3vw,42px); }
+.flecha-inicio{ right:clamp(16px,3vw,42px); }
 
-.flecha-indice{
-    left:24px;
-}
-
-.flecha-inicio{
-    right:24px;
-}
-
-/* HEADERS */
-.header-portada{
-    margin-top:55px;
-}
-
+.header-portada,
 .header-app{
-    margin-top:14px;
+    position:relative;
+    z-index:2;
+    width:min(100%,980px);
+    margin-top:54px;
+    padding:22px clamp(20px,4vw,36px);
+    border:1px solid rgba(255,255,255,.86);
+    border-radius:32px;
+    background:var(--paper);
+    box-shadow:var(--shadow);
+    backdrop-filter:blur(18px);
+    animation:fadeUp .34s ease both;
 }
 
-.logo-portada{
-    width:360px;
+.header-app{ margin-top:48px; padding-block:16px; }
+
+.brand-row{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:16px;
+    flex-wrap:wrap;
 }
 
+.logo-portada,
 .logo-app{
-    width:150px;
+    width:100px;
+    height:70px;
+    object-fit:contain;
+    filter:drop-shadow(0 14px 20px rgba(15,23,42,.10));
 }
 
-/* TEXTOS */
-h1{
-    font-size:36px;
-    margin:22px 0 8px 0;
-}
+.logo-app{ width:64px; height:42px; }
 
-h2{
-    font-size:30px;
-    margin:10px 0 6px 0;
-}
+h1,h2{ color:var(--ink); letter-spacing:-.04em; }
+h1{ font-size:clamp(30px,3.5vw,46px); margin:18px 0 8px; font-weight:680; }
+h2{ font-size:clamp(24px,2.6vw,34px); margin:8px 0 4px; font-weight:650; }
 
 .bajada{
-    font-size:24px;
-    margin-top:0;
+    max-width:680px;
+    margin:0 auto;
+    color:var(--muted);
+    font-size:clamp(15px,1.45vw,18px);
+    line-height:1.55;
 }
 
 .contador{
-    font-size:18px;
-    margin-top:4px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    min-height:34px;
+    margin-top:8px;
+    padding:0 14px;
+    border-radius:999px;
+    background:#ecfeff;
+    color:#0e7490;
+    font-size:14px;
+    font-weight:720;
+    border:1px solid #cffafe;
 }
 
-/* MAIN */
 .main{
+    position:relative;
+    z-index:2;
     flex:1;
     width:100%;
     display:flex;
     flex-direction:column;
     justify-content:center;
     align-items:center;
-    padding:5px 0;
+    padding:18px 0 10px;
 }
 
-/* CINTA */
 .cinta{
     display:grid;
-    grid-template-columns: repeat(10,90px);
+    grid-template-columns:repeat(10,var(--tam));
     justify-content:center;
-    margin-top:20px;
+    margin-top:16px;
+    overflow:visible;
+    border:3px solid rgba(6,35,63,.86);
+    border-radius:10px;
+    background:rgba(255,255,255,.82);
+    box-shadow:0 24px 60px -42px rgba(15,23,42,.62);
+    animation:softAppear .26s ease both;
 }
 
 .casilla{
-    width:90px;
-    height:90px;
-    border:2px solid #1f3b57;
+    width:var(--tam);
+    height:var(--tam);
     display:flex;
     justify-content:center;
     align-items:center;
-    font-size:28px;
-    background:white;
+    border-right:2px solid rgba(6,35,63,.58);
+    background:rgba(255,255,255,.62);
+    color:var(--ink);
+    font-size:clamp(24px,3vw,34px);
+    font-weight:520;
+    line-height:1;
     cursor:pointer;
 }
 
+.casilla:last-child{ border-right:none; }
+
 .activa{
-    background:#f6e7a1;
+    background:rgba(254,243,199,.85) !important;
+    position:relative;
+    z-index:3;
+    box-shadow:inset 0 0 0 3px rgba(8,145,178,.14);
+}
+
+.activa::before{
+    content:"↓";
+    position:absolute;
+    left:50%;
+    top:-48px;
+    transform:translateX(-50%);
+    width:32px;
+    height:32px;
+    display:grid;
+    place-items:center;
+    border:1px solid rgba(8,145,178,.16);
+    border-radius:999px;
+    background:rgba(255,255,255,.82);
+    color:#0891b2;
+    font-size:22px;
+    font-weight:680;
+    box-shadow:0 14px 28px -22px rgba(8,145,178,.9);
+    animation:hintArrow 1.2s ease-in-out infinite;
+    z-index:10;
+    pointer-events:none;
+}
+
+@keyframes hintArrow{
+    0%,100%{ transform:translate(-50%,0); opacity:.72; }
+    50%{ transform:translate(-50%,5px); opacity:1; }
 }
 
 .correcto{
-    background:#cfe9cf !important;
+    background:linear-gradient(135deg,#5eead4,#22c55e) !important;
+    color:white !important;
 }
 
 .incorrecto{
-    background:#f6caca !important;
+    background:linear-gradient(135deg,#fb7185,#ef4444) !important;
+    color:white !important;
 }
 
-/* BANCO */
 .banco{
     display:flex;
     justify-content:center;
     flex-wrap:wrap;
-    gap:12px;
+    gap:10px;
     margin-top:30px;
+    max-width:min(100%,1000px);
 }
 
 .tarjeta{
-    width:80px;
-    height:80px;
-    background:#f6e7a1;
-    border-radius:10px;
-    font-size:26px;
+    width:var(--tam);
+    height:var(--tam);
     display:flex;
     justify-content:center;
     align-items:center;
+    border:1px solid rgba(8,145,178,.18);
+    border-radius:10px;
+    background:linear-gradient(135deg,#fff7cc,#fde68a);
+    color:#334155;
+    font-size:clamp(24px,3vw,34px);
+    font-weight:560;
     cursor:grab;
-    border:2px solid #d4c27a;
+    box-shadow:0 18px 34px -26px rgba(15,23,42,.72), inset 0 10px 18px rgba(255,255,255,.34);
+    transition:transform .18s ease,box-shadow .18s ease,background .18s ease;
 }
 
-/* FOOTER */
+.tarjeta:hover{
+    transform:translateY(-2px);
+    box-shadow:0 24px 42px -28px rgba(15,23,42,.82), inset 0 10px 18px rgba(255,255,255,.34);
+}
+
+.tarjeta.seleccionada{
+    outline:4px solid rgba(20,184,166,.42);
+    transform:translateY(-3px) scale(1.03);
+}
+
 .footer{
+    position:relative;
+    z-index:2;
     width:100%;
-    min-height:90px;
-    padding:5px 0 20px 0;
+    min-height:78px;
+    padding:8px 0 0;
     display:flex;
     justify-content:center;
     align-items:center;
-    gap:15px;
+    gap:14px;
     flex-wrap:wrap;
 }
 
 .boton{
-    padding:14px 28px;
-    font-size:20px;
-    background:#4CAF50;
+    min-height:52px;
+    padding:0 26px;
+    border:1px solid rgba(8,145,178,.18);
+    border-radius:18px;
+    background:linear-gradient(135deg,#0891b2,#14b8a6);
     color:white;
-    border:none;
-    border-radius:12px;
+    font-size:17px;
+    font-weight:720;
     cursor:pointer;
+    box-shadow:0 18px 34px -24px rgba(8,145,178,.95);
+    transition:transform .22s ease,box-shadow .22s ease,filter .22s ease;
 }
 
-@media (max-height:750px){
-    .logo-app{
-        width:120px;
-    }
+.boton:hover{
+    transform:translateY(-2px);
+    filter:saturate(1.04);
+    box-shadow:0 24px 44px -26px rgba(8,145,178,1);
+}
 
-    h2{
-        font-size:26px;
-        margin:6px 0 4px 0;
-    }
+.boton:active{ transform:translateY(0) scale(.99); }
 
-    .contador{
-        font-size:16px;
-    }
+@keyframes fadeUp{ from{ opacity:0; transform:translateY(10px); } to{ opacity:1; transform:translateY(0); } }
+@keyframes softAppear{ from{ opacity:0; transform:scale(.985); } to{ opacity:1; transform:scale(1); } }
 
-    .cinta{
-        grid-template-columns: repeat(10,78px);
-        margin-top:10px;
-    }
+@media (max-height:760px){
+    :root{ --tam:clamp(52px,6.8vw,74px); }
+    .wrapper{ padding-top:14px; }
+    .header-portada,.header-app{ margin-top:44px; padding-block:14px; }
+    h1{ font-size:38px; margin-top:12px; }
+    h2{ font-size:30px; }
+    .main{ padding-block:8px; }
+    .cinta{ margin-top:10px; }
+    .banco{ margin-top:20px; }
+    .footer{ min-height:66px; }
+}
 
-    .casilla{
-        width:78px;
-        height:78px;
-        font-size:26px;
-    }
+@media (max-width:860px){
+    :root{ --tam:clamp(34px,8.7vw,58px); }
+    .casilla,.tarjeta{ border-radius:10px; }
+    .cinta{ overflow-x:auto; }
+}
 
-    .tarjeta{
-        width:70px;
-        height:70px;
-        font-size:24px;
-    }
-
-    .banco{
-        margin-top:22px;
-    }
-
-    .footer{
-        min-height:75px;
-        padding-bottom:12px;
-    }
+@media (max-width:640px){
+    .flecha-nav{ top:12px; min-height:38px; padding-inline:12px; font-size:13px; }
+    .header-portada,.header-app{ margin-top:48px; border-radius:26px; }
+    .logo-portada{ width:78px; }
+    .logo-app{ width:62px; }
+    .boton{ width:min(100%,320px); }
 }
 </style>
 </head>
@@ -225,16 +349,14 @@ h2{
 
 <script>
 
-/* NAVEGACIÓN */
 function volverIndice(){
-    window.location.href = "index_kinder.html";
+    window.location.href = "/kinder";
 }
 
 function volverInicio(){
     portada();
 }
 
-/* VOZ */
 function hablar(texto){
     let m = new SpeechSynthesisUtterance(texto);
     m.lang = "es-CL";
@@ -258,8 +380,8 @@ let modoLibre = false;
 let numeroArrastrado = null;
 let tarjetaActual = null;
 
-/* PORTADA */
 function portada(){
+
     speechSynthesis.cancel();
 
     document.getElementById("pantalla").innerHTML = `
@@ -270,25 +392,36 @@ function portada(){
             </div>
 
             <div class="header-portada">
-                <img src="logo.png" class="logo-portada">
+                <div class="brand-row">
+                    <img src="/images/calcumat-hands-bg.png" class="logo-portada" alt="Calcumat">
+                </div>
+
                 <h1>¿Completemos la cinta numerada?</h1>
-                <div class="bajada">Completar secuencia numérica hasta 10 · Parte 2</div>
+
+                <div class="bajada">
+                    Completar secuencia numérica hasta 10 · Parte 2
+                </div>
             </div>
 
             <div class="main"></div>
 
             <div class="footer">
-                <button class="boton" onclick="nuevoEjercicio()">Iniciar</button>
+                <button class="boton" onclick="nuevoEjercicio()">
+                    Iniciar
+                </button>
             </div>
+
         </div>
     `;
 }
 
-/* NUEVO */
 function nuevoEjercicio(){
 
     ejercicio++;
+
     modoLibre = false;
+    numeroArrastrado = null;
+    tarjetaActual = null;
 
     if(ejercicio > total){
         final();
@@ -300,14 +433,17 @@ function nuevoEjercicio(){
     respuestas = Array(10).fill(null);
 
     let fijos = nivel === 1 ? [1,5,10] : [1,10];
+
     fijos.forEach(n=> respuestas[n-1]=n);
 
     orden = [];
+
     for(let i=1;i<=10;i++){
         if(!fijos.includes(i)) orden.push(i-1);
     }
 
     orden.sort(()=>Math.random()-0.5);
+
     indiceActual = 0;
 
     document.getElementById("pantalla").innerHTML = `
@@ -322,18 +458,33 @@ function nuevoEjercicio(){
             </div>
 
             <div class="header-app">
-                <img src="logo.png" class="logo-app">
+
+                <div class="brand-row">
+                    <img src="/images/calcumat-hands-bg.png" class="logo-app" alt="Calcumat">
+                </div>
+
                 <h2>Completa la cinta numerada.</h2>
-                <div class="contador">Ejercicio ${ejercicio} de ${total}</div>
+
+                <div class="contador">
+                    Ejercicio ${ejercicio} de ${total}
+                </div>
+
             </div>
 
             <div class="main">
+
                 <div id="cinta" class="cinta"></div>
+
                 <div id="banco" class="banco"></div>
+
             </div>
 
             <div class="footer">
-                <button class="boton" onclick="verificar()">Verificar</button>
+
+                <button class="boton" onclick="verificar()">
+                    Verificar
+                </button>
+
             </div>
 
         </div>
@@ -344,15 +495,16 @@ function nuevoEjercicio(){
     marcarCasilla();
 }
 
-/* CINTA */
 function dibujarCinta(){
 
     let cinta = document.getElementById("cinta");
+
     cinta.innerHTML="";
 
     for(let i=0;i<10;i++){
 
         let c = document.createElement("div");
+
         c.className="casilla";
 
         c.ondragover = (e)=> e.preventDefault();
@@ -361,18 +513,27 @@ function dibujarCinta(){
             colocarEnCasilla(i);
         };
 
-        /* DEVOLVER TARJETA AL HACER CLICK */
         c.onclick = ()=>{
+
+            if(numeroArrastrado !== null){
+                colocarEnCasilla(i);
+                return;
+            }
+
             if(respuestas[i] != null){
 
                 let fijos = nivel === 1 ? [1,5,10] : [1,10];
+
                 if(fijos.includes(respuestas[i])) return;
 
                 devolverAlBanco(respuestas[i]);
+
                 respuestas[i] = null;
 
                 if(!modoLibre){
+
                     indiceActual--;
+
                     if(indiceActual < 0) indiceActual = 0;
                 }
 
@@ -382,23 +543,26 @@ function dibujarCinta(){
         };
 
         if(respuestas[i]!=null){
+
             c.innerText = respuestas[i];
-            c.style.background="#f6e7a1";
+
+            c.style.background="rgba(254,243,199,.85)";
         }
 
         cinta.appendChild(c);
     }
 }
 
-/* BANCO */
 function dibujarBanco(){
 
     let banco = document.getElementById("banco");
+
     banco.innerHTML="";
 
     let fijos = nivel === 1 ? [1,5,10] : [1,10];
 
     let nums=[];
+
     for(let i=1;i<=10;i++){
         if(!fijos.includes(i)) nums.push(i);
     }
@@ -406,26 +570,36 @@ function dibujarBanco(){
     nums.sort(()=>Math.random()-0.5);
 
     nums.forEach(n=>{
+
         let t = document.createElement("div");
+
         t.className="tarjeta";
+
         t.innerText=n;
+
         t.draggable = true;
 
         t.ondragstart = ()=>{
+
             numeroArrastrado = n;
+
             tarjetaActual = t;
+        };
+
+        t.onclick = ()=>{
+            seleccionarTarjeta(n, t);
         };
 
         banco.appendChild(t);
     });
 }
 
-/* MARCAR */
 function marcarCasilla(){
 
     if(modoLibre) return;
 
     let casillas = document.querySelectorAll(".casilla");
+
     casillas.forEach(c=>c.classList.remove("activa"));
 
     if(indiceActual < orden.length){
@@ -433,17 +607,22 @@ function marcarCasilla(){
     }
 }
 
-/* COLOCAR */
 function colocarEnCasilla(pos){
 
     if(numeroArrastrado === null) return;
 
     if(!modoLibre){
+
         if(pos !== orden[indiceActual]) return;
+
         respuestas[pos] = numeroArrastrado;
+
         indiceActual++;
+
     }else{
+
         if(respuestas[pos] !== null) return;
+
         respuestas[pos] = numeroArrastrado;
     }
 
@@ -456,10 +635,17 @@ function colocarEnCasilla(pos){
     marcarCasilla();
 }
 
-/* VERIFICAR */
+function seleccionarTarjeta(num, tarjeta){
+    document.querySelectorAll(".tarjeta.seleccionada").forEach(t=>t.classList.remove("seleccionada"));
+    numeroArrastrado = num;
+    tarjetaActual = tarjeta;
+    tarjeta.classList.add("seleccionada");
+}
+
 function verificar(){
 
     let casillas = document.querySelectorAll(".casilla");
+
     let todoBien=true;
 
     for(let i=0;i<10;i++){
@@ -467,11 +653,15 @@ function verificar(){
         if(respuestas[i]!=null){
 
             if(respuestas[i]==i+1){
+
                 casillas[i].classList.add("correcto");
+
             }else{
+
                 casillas[i].classList.add("incorrecto");
 
                 devolverAlBanco(respuestas[i]);
+
                 respuestas[i]=null;
 
                 todoBien=false;
@@ -480,35 +670,49 @@ function verificar(){
     }
 
     if(todoBien){
+
         hablar("Muy bien, completaste la cinta");
+
         setTimeout(nuevoEjercicio,1500);
+
     }else{
+
         hablar("Inténtalo otra vez");
+
         modoLibre = true;
+
         dibujarCinta();
     }
 }
 
-/* DEVOLVER */
 function devolverAlBanco(num){
 
     let banco = document.getElementById("banco");
 
     let t = document.createElement("div");
+
     t.className="tarjeta";
+
     t.innerText=num;
+
     t.draggable=true;
 
     t.ondragstart = ()=>{
+
         numeroArrastrado = num;
+
         tarjetaActual = t;
+    };
+
+    t.onclick = ()=>{
+        seleccionarTarjeta(num, t);
     };
 
     banco.appendChild(t);
 }
 
-/* FINAL */
 function final(){
+
     document.getElementById("pantalla").innerHTML = `
         <div class="wrapper">
 
@@ -521,16 +725,29 @@ function final(){
             </div>
 
             <div class="header-portada">
-                <img src="logo.png" class="logo-portada">
+
+                <div class="brand-row">
+                    <img src="/images/calcumat-hands-bg.png" class="logo-portada" alt="Calcumat">
+                </div>
+
                 <h1>¡Muy bien!</h1>
-                <div class="bajada">Completaste todas las cintas</div>
+
+                <div class="bajada">
+                    Completaste todas las cintas
+                </div>
+
             </div>
 
             <div class="main"></div>
 
             <div class="footer">
-                <button class="boton" onclick="portada()">Volver</button>
+
+                <button class="boton" onclick="portada()">
+                    Volver
+                </button>
+
             </div>
+
         </div>
     `;
 }
